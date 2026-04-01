@@ -1,0 +1,30 @@
+@startuml
+skinparam style strictuml
+skinparam maxMessageSize 150
+
+actor "Nhân viên" as Staff
+participant "Giao diện\nLập bồi thường" as UI
+participant "Hệ thống\n(App Logic)" as App
+database "Bảng\nHOA_DON" as DB
+
+Staff -> UI : 1. Chọn phòng và bấm "Lập hóa đơn bồi thường"
+activate UI
+
+Staff -> UI : 2. Nhập nội dung hư hại (Ví dụ: "Hỏng vòi sen") \nvà số tiền phạt (500.000đ)
+
+UI -> App : 3. Gửi yêu cầu lưu bồi thường\n(hop_dong_id, noi_dung, so_tien)
+activate App
+
+App -> App : 4. Chuẩn bị dữ liệu để INSERT:\n- loai_hoa_don = 'BOI_THUONG'\n- tong_tien = so_tien\n- ghi_chu = noi_dung\n- da_thanh_toan = FALSE
+
+App -> DB : 5. INSERT INTO HOA_DON (hop_dong_id, tong_tien, \nghi_chu, loai_hoa_don, da_thanh_toan)
+activate DB
+DB --> App : 6. Xác nhận lưu thành công (Trả về hoa_don_id)
+deactivate DB
+
+App --> UI : 7. Thông báo thành công & Hiển thị nút "In phiếu thu"
+deactivate App
+
+UI --> Staff : 8. Hiển thị thông báo "Đã ghi nhận bồi thường"
+deactivate UI
+@enduml

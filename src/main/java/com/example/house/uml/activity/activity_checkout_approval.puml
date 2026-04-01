@@ -1,0 +1,35 @@
+@startuml
+skinparam style strictuml
+
+|Nhân viên|
+start
+:Tiếp nhận yêu cầu trả phòng từ khách;
+:Kiểm tra tình trạng tài sản thực tế trong phòng;
+:Lập phiếu yêu cầu trả phòng (nhập chi phí hư hỏng nếu có);
+
+|Hệ thống|
+:Tổng hợp các hóa đơn chưa thanh toán của phòng;
+:Tính toán số tiền quyết toán cuối cùng
+(Tiền cọc - Nợ hóa đơn - Phí bồi thường);
+:Gửi thông báo "Chờ phê duyệt" đến Admin;
+
+|Admin|
+:Nhận thông báo và xem chi tiết phiếu yêu cầu;
+if (Quyết định phê duyệt?) then (Từ chối)
+    |Hệ thống|
+    :Báo lỗi và trả phiếu về cho Nhân viên;
+    |Nhân viên|
+    :Kiểm tra lại số liệu và trao đổi lại với khách;
+    stop
+else (Đồng ý)
+    |Hệ thống|
+    :Cập nhật trạng thái Hợp đồng thành "Kết thúc";
+    :Cập nhật trạng thái Phòng thành "Trống";
+    :Vô hiệu hóa các xe đăng ký của phòng này;
+endif
+
+|Nhân viên|
+:Hoàn trả tiền cọc (hoặc thu thêm tiền thiếu) từ khách;
+:Thu lại chìa khóa phòng;
+stop
+@enduml

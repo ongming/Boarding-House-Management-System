@@ -1,0 +1,67 @@
+@startuml
+skinparam style strictuml
+skinparam maxMessageSize 150
+
+actor "Nhân viên" as Staff
+participant "Giao diện\nLập hợp đồng" as UI
+participant "Hệ thống\n(Controller)" as Server
+database "Bảng\nPHONG" as DB_Phong
+database "Bảng\nKHACH_THUE" as DB_Khach
+database "Bảng\nHOP_DONG" as DB_HopDong
+database "Bảng\nXE" as DB_Xe
+
+Staff -> UI : 1. Chọn phòng & Nhập thông tin\nkhách, tiền cọc, số người
+activate UI
+UI -> Server : 2. Gửi Data (so_phong, ho_ten, cccd...)
+activate Server
+
+' Bước 1: Kiểm tra phòng
+Server -> DB_Phong : 3. SELECT trang_thai FROM PHONG\nWHERE id = phong_id
+activate DB_Phong
+DB_Phong --> Server : 4. Trả về trang_thai
+deactivate DB_Phong
+
+alt trang_thai != 'TRONG'
+    Server --> UI : 5a. Báo lỗi "Phòng không trống"
+    UI --> Staff : 6a. Hiển thị thông báo lỗi
+else trang_thai == 'TRONG'
+    ' Bắt đầu Transaction
+    Server -> Server : 5b. Bắt đầu Database Transaction
+
+    ' Bước 2: Lưu khách thuê
+    Server -> DB_Khach : 6b. INSERT INTO KHACH_THUE\n(ho_ten, so_cccd, so_dien_thoai)
+    activate DB_Khach
+    DB_Khach --> Server : 7. Trả về khach_thue_id
+    deactivate DB_Khach
+
+    ' Bước 3: Lưu hợp đồng
+    Server -> Server : 8. Upload file & Lấy url_anh
+    Server -> DB_HopDong : 9. INSERT INTO HOP_DONG\n(khach_thue_id, phong_id, tien_coc,\nanh_hop_dong_url, so_luong_nguoi_o)
+    activate DB_HopDong
+    DB_HopDong --> Server : 10. Trả về hop_dong_id
+    deactivate DB_HopDong
+
+    ' Bước 4: Xử lý Xe (Nếu có)
+    opt Khách có đăng ký xe
+        Server -> DB_Xe : 11. INSERT INTO XE\n(hop_dong_id, loai_xe, bien_so)
+        activate DB_Xe
+        DB_Xe --> Server : 12. Xác nhận lưu xe
+        deactivate DB_Xe
+    end
+
+    ' Bước 5: Cập nhật trạng thái phòng
+    Server -> DB_Phong : 13. UPDATE PHONG\nSET trang_thai = 'DA_THUE'\nWHERE id = phong_id
+    activate DB_Phong
+    DB_Phong --> Server : 14. Xác nhận cập nhật
+    deactivate DB_Phong
+
+    ' Kết thúc Transaction
+    Server -> Server : 15. Commit Transaction
+
+    Server --> UI : 16. Trả về kết quả "Thành công"
+    UI --> Staff : 17. Hiển thị "Lập hợp đồng thành công"
+end
+
+deactivate Server
+deactivate UI
+@enduml

@@ -1,0 +1,21 @@
+@startuml
+skinparam style strictuml
+skinparam maxMessageSize 150
+
+actor "Nhân viên" as Staff
+participant "Phần mềm\nQuản lý" as App
+database "Bảng\nNHAN_VIEN" as DB
+
+Staff -> App : 1. Truy cập chức năng "Xem lịch trực"
+activate App
+
+App -> DB : 2. Truy vấn trực tiếp lấy lịch ca trực\n(SELECT ca_lam_viec FROM NHAN_VIEN\nWHERE tai_khoan_id = ...)
+activate DB
+DB --> App : 3. Trả về dữ liệu ca trực
+deactivate DB
+
+App -> App : 4. Xử lý và định dạng lại dữ liệu
+
+App --> Staff : 5. Hiển thị lịch làm việc lên giao diện
+deactivate App
+@enduml

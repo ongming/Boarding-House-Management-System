@@ -1,0 +1,46 @@
+@startuml
+skinparam style strictuml
+skinparam maxMessageSize 150
+
+actor "Quản trị viên" as Admin
+participant "Giao diện\nCấu hình giá" as UI
+participant "Máy chủ\n(Hệ thống)" as Server
+database "Cơ sở dữ liệu\n(Bảng CAU_HINH_GIA)" as DB
+
+== 1. Xem bảng giá hiện tại ==
+Admin -> UI : 1. Mở chức năng "Thiết lập đơn giá"
+activate UI
+
+UI -> Server : 2. Yêu cầu lấy danh sách đơn giá
+activate Server
+
+Server -> DB : 3. Truy vấn bảng giá\n(SELECT ten_loai, don_gia\nFROM CAU_HINH_GIA)
+activate DB
+DB --> Server : 4. Trả về dữ liệu (DIEN, NUOC, RAC, XE_MAY)
+deactivate DB
+
+Server --> UI : 5. Trả danh sách cấu hình giá
+UI --> Admin : 6. Hiển thị biểu mẫu cập nhật với giá cũ
+deactivate Server
+
+== 2. Cập nhật đơn giá mới ==
+Admin -> UI : 7. Nhập giá mới (ví dụ: Tăng giá điện)\nvà bấm "Lưu thay đổi"
+UI -> Server : 8. Gửi gói dữ liệu danh sách giá mới
+activate Server
+
+Server -> Server : 9. Bắt đầu giao dịch cơ sở dữ liệu
+
+loop Cho từng loại dịch vụ (ten_loai)
+    Server -> DB : 10. Cập nhật giá trị mới\n(UPDATE CAU_HINH_GIA\nSET don_gia = [giá_mới]\nWHERE ten_loai = [tên_loại])
+    activate DB
+    DB --> Server : 11. Xác nhận lưu
+    deactivate DB
+end
+
+Server -> Server : 12. Xác nhận hoàn tất giao dịch
+
+Server --> UI : 13. Trả về thông báo thành công
+UI --> Admin : 14. Hiển thị "Đã cập nhật bảng giá"\nvà tải lại màn hình
+deactivate Server
+deactivate UI
+@enduml

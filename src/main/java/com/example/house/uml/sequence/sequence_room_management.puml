@@ -1,0 +1,65 @@
+@startuml
+skinparam style strictuml
+skinparam maxMessageSize 150
+
+actor "Quản trị viên" as Admin
+participant "Giao diện\nQuản lý Phòng" as UI
+participant "Máy chủ\n(Hệ thống)" as Server
+database "Bảng\nPHONG" as DB
+
+== 1. Xem danh sách phòng hiện có ==
+Admin -> UI : 1. Mở trang "Quản lý Tầng/Phòng"
+activate UI
+
+UI -> Server : 2. Yêu cầu danh sách phòng
+activate Server
+
+Server -> DB : 3. Truy vấn dữ liệu\n(SELECT * FROM PHONG\nORDER BY tang, so_phong)
+activate DB
+DB --> Server : 4. Trả về danh sách
+deactivate DB
+
+Server --> UI : 5. Trả kết quả dữ liệu
+UI --> Admin : 6. Hiển thị danh sách phòng theo từng tầng
+deactivate Server
+
+== 2. Thêm phòng mới ==
+Admin -> UI : 7. Nhập thông tin (so_phong, tang, co_may_lanh, gia_thue...)\nvà bấm "Thêm phòng"
+UI -> Server : 8. Gửi yêu cầu tạo phòng
+activate Server
+
+' Bước quan trọng: Kiểm tra trùng lặp
+Server -> DB : 9. Kiểm tra trùng số phòng\n(SELECT id FROM PHONG WHERE so_phong = ...)
+activate DB
+DB --> Server : 10. Trả kết quả kiểm tra
+deactivate DB
+
+alt Số phòng đã tồn tại
+    Server --> UI : 11a. Báo lỗi "Số phòng đã tồn tại trên hệ thống"
+    UI --> Admin : 12a. Hiển thị thông báo lỗi yêu cầu nhập lại
+else Số phòng hợp lệ
+    Server -> DB : 11b. Lưu phòng mới\n(INSERT INTO PHONG (so_phong, tang,\nco_may_lanh, gia_thue_co_ban, danh_sach_noi_that))
+    activate DB
+    DB --> Server : 12b. Xác nhận lưu thành công
+    deactivate DB
+
+    Server --> UI : 13. Trả về thông báo thành công
+    UI --> Admin : 14. Làm mới danh sách trên màn hình
+end
+deactivate Server
+
+== 3. Cập nhật thông tin / Bảo trì ==
+Admin -> UI : 15. Chọn một phòng, sửa thông tin\n(ví dụ: đổi trạng thái sang 'BAO_TRI')\nvà bấm "Cập nhật"
+UI -> Server : 16. Gửi dữ liệu cập nhật (phong_id, dữ liệu mới)
+activate Server
+
+Server -> DB : 17. Cập nhật bảng PHONG\n(UPDATE PHONG SET gia_thue_co_ban = ...,\ntrang_thai = 'BAO_TRI' WHERE id = ...)
+activate DB
+DB --> Server : 18. Xác nhận thành công
+deactivate DB
+
+Server --> UI : 19. Trả về thông báo thành công
+UI --> Admin : 20. Cập nhật lại giao diện hiển thị
+deactivate Server
+deactivate UI
+@enduml

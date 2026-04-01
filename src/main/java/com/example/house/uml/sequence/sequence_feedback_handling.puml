@@ -1,0 +1,58 @@
+@startuml
+skinparam style strictuml
+skinparam maxMessageSize 150
+
+actor "Nhân viên" as Staff
+actor "Admin" as Admin
+participant "Giao diện" as UI
+participant "Hệ thống\n(Server)" as Server
+database "Bảng\nPHAN_HOI" as DB
+
+== 1. Nhân viên ghi nhận sự cố ==
+Staff -> UI : 1. Chọn phòng và nhập nội dung sự cố
+activate UI
+UI -> Server : 2. Gửi Data (phong_id, noi_dung)
+activate Server
+
+Server -> DB : 3. Thêm mới phản hồi\n(INSERT INTO PHAN_HOI (phong_id, nhan_vien_id, noi_dung)\n-- Trạng thái mặc định là 'CHO_XU_LY')
+activate DB
+DB --> Server : 4. Xác nhận lưu thành công
+deactivate DB
+
+Server --> UI : 5. Trả kết quả
+UI --> Staff : 6. Hiển thị "Đã gửi báo cáo sự cố"
+deactivate Server
+deactivate UI
+
+== 2. Admin tiếp nhận và điều thợ ==
+Admin -> Server : 7. Truy cập trang Quản lý phản hồi\n(SELECT * FROM PHAN_HOI WHERE trang_thai = 'CHO_XU_LY')
+activate Server
+Server -> DB : 8. Lấy danh sách chờ xử lý
+activate DB
+DB --> Server : 9. Trả về danh sách
+deactivate DB
+
+Server --> Admin : 10. Hiển thị danh sách sự cố
+Admin -> Server : 11. Bấm "Tiến hành sửa chữa"
+
+Server -> DB : 12. Cập nhật trạng thái\n(UPDATE PHAN_HOI SET trang_thai = 'DANG_SUA'\nWHERE id = ...)
+activate DB
+DB --> Server : 13. Xác nhận cập nhật
+deactivate DB
+
+Server --> Admin : 14. Báo thành công, hiển thị "Đang sửa"
+deactivate Server
+
+== 3. Nhân viên nghiệm thu hoàn tất ==
+Staff -> Server : 15. Bấm "Đã sửa xong" sau khi thợ làm xong
+activate Server
+
+Server -> DB : 16. Cập nhật trạng thái cuối\n(UPDATE PHAN_HOI SET trang_thai = 'HOAN_THANH'\nWHERE id = ...)
+activate DB
+DB --> Server : 17. Xác nhận cập nhật
+deactivate DB
+
+Server --> Staff : 18. Báo thành công, đóng phiếu sự cố
+deactivate Server
+
+@enduml

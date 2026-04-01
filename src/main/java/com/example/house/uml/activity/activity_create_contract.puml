@@ -1,0 +1,41 @@
+@startuml
+skinparam style strictuml
+
+|Nhân viên|
+start
+:Yêu cầu khách cung cấp thông tin;
+:Nhập thông tin khách (Họ tên, CCCD, SĐT);
+
+repeat
+  |Nhân viên|
+  :Chọn phòng muốn thuê;
+
+  |Hệ thống|
+  :Kiểm tra trạng thái phòng trong bảng PHONG;
+
+  ' Mũi tên vòng ngược lại kèm hành động báo lỗi
+  backward: Báo lỗi "Phòng hiện không thể cho thuê";
+repeat while (Trạng thái là "TRONG"?) is (Không)
+
+-> Có;
+|Nhân viên|
+:Nhập thời hạn thuê và tiền cọc;
+:Tải lên ảnh hợp đồng (URL);
+
+if (Khách có đăng ký gửi xe?) then (Có)
+  :Nhập loại xe và biển số;
+  |Hệ thống|
+  :Lưu thông tin vào bảng XE;
+else (Không)
+endif
+
+|Hệ thống|
+:Tạo bản ghi mới trong bảng KHACH_THUE;
+:Tạo bản ghi mới trong bảng HOP_DONG;
+:Cập nhật trạng thái phòng thành "DA_THUE";
+:Hiển thị thông báo "Hoàn tất thủ tục nhận phòng";
+
+|Nhân viên|
+:Bàn giao chìa khóa cho khách;
+stop
+@enduml

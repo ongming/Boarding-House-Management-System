@@ -1,0 +1,64 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor NhanVien as Staff
+actor Admin as Admin
+
+rectangle "Hệ thống quản lý" {
+  usecase "Dang nhap" as UC_Login
+
+  package "Nhan vien" as StaffPkg {
+    usecase "Dang ky khach moi" as UC_Tenant
+    usecase "Lap hop dong + upload anh" as UC_Contract
+    usecase "Quan ly xe (loai/bien so)" as UC_Vehicle
+    usecase "Cap nhat so nguoi o" as UC_Occupancy
+    usecase "Chot chi so dien nuoc" as UC_Meter
+    usecase "Tinh toan/Xuat hoa don" as UC_Bill
+    usecase "Xac nhan thanh toan" as UC_Payment
+    usecase "Xem hoa don" as UC_ViewInvoice
+    usecase "Ghi nhan su co/phan hoi" as UC_Feedback
+    usecase "Xem lich ca truc" as UC_ShiftView
+  }
+
+  package "Admin" as AdminPkg {
+    usecase "Thiet lap don gia" as UC_Config
+    usecase "Quan ly tang/phong" as UC_Floor
+    usecase "Cap tai khoan nhan vien" as UC_Staff
+    usecase "Xep ca AI" as UC_AISchedule
+    usecase "Thong ke doanh thu" as UC_Revenue
+    usecase "Phe duyet tra phong" as UC_Checkout
+    usecase "Quan ly/chi dao phan hoi" as UC_FeedbackDir
+    usecase "Tra cuu hoa don" as UC_InvoiceLookup
+  }
+}
+
+Staff --> UC_Login
+Staff --> UC_Tenant
+Staff --> UC_Contract
+Staff --> UC_Vehicle
+Staff --> UC_Occupancy
+Staff --> UC_Meter
+Staff --> UC_Bill
+Staff --> UC_Payment
+Staff --> UC_ViewInvoice
+Staff --> UC_Feedback
+Staff --> UC_ShiftView
+
+Admin --> UC_Login
+Admin --> UC_Config
+Admin --> UC_Floor
+Admin --> UC_Staff
+Admin --> UC_AISchedule
+Admin --> UC_Revenue
+Admin --> UC_Checkout
+Admin --> UC_FeedbackDir
+Admin --> UC_InvoiceLookup
+
+UC_Bill ..> UC_Meter : <<include>>
+UC_Bill ..> UC_Occupancy : <<include>>
+UC_Contract ..> UC_Vehicle : <<extend>>
+UC_Checkout ..> UC_Floor : <<include>>
+UC_ViewInvoice ..> UC_Payment : <<extend>>
+
+@enduml

@@ -1,0 +1,34 @@
+@startuml
+skinparam style strictuml
+
+|Nhân viên|
+start
+:Tiếp nhận phản ánh sự cố từ khách thuê;
+:Mở chức năng "Ghi nhận sự cố/phản hồi";
+:Chọn phòng và nhập nội dung chi tiết;
+
+|Hệ thống|
+:Tạo bản ghi mới vào bảng PHAN_HOI
+(Trạng thái mặc định: "CHO");
+:Hiển thị thông báo sự cố mới trên màn hình của Admin;
+
+|Admin|
+:Xem danh sách các sự cố đang chờ xử lý;
+:Đánh giá tình hình và chỉ đạo/phân công thợ;
+:Cập nhật trạng thái sự cố thành "DANG_SUA";
+
+|Hệ thống|
+:Lưu thay đổi trạng thái vào cơ sở dữ liệu;
+
+|Nhân viên|
+:Phối hợp với thợ thực hiện sửa chữa;
+:Sau khi xong, xác nhận đã khắc phục sự cố trên phần mềm;
+
+|Hệ thống|
+:Cập nhật trạng thái trong bảng PHAN_HOI thành "XONG";
+:Lưu thời gian hoàn thành thực tế;
+
+|Nhân viên|
+:Thông báo kết quả cho khách thuê an tâm;
+stop
+@enduml

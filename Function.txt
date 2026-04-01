@@ -1,0 +1,49 @@
+1. NHÓM CHỨC NĂNG CỦA ADMIN (CHỦ TRỌ)
+A. Quản lý Hệ thống & Cấu hình (System Config)
+
+    Thiết lập đơn giá: Nhập và cập nhật giá Điện, Nước, Xe, Rác vào hệ thống.
+
+    Quản lý Sơ đồ nhà trọ: * Thêm/Sửa/Xóa Tầng.
+
+    Thêm/Sửa/Xóa Phòng (định nghĩa số phòng, loại máy lạnh, giá gốc, nội thất).
+
+    Quản lý Nhân sự: * Cấp tài khoản cho nhân viên mới.
+
+    Xếp ca AI: Nhấn nút để AI tự động chia lịch trực dựa trên dữ liệu phòng trọ.
+
+B. Giám sát & Phê duyệt (Monitoring & Approval)
+
+    Thống kê doanh thu: Xem biểu đồ tổng tiền thu được theo tháng/quý/năm.
+
+    Phê duyệt trả phòng: Kiểm tra báo cáo hoàn phòng từ nhân viên, nhập tiền đền bù hỏng hóc và xác nhận trả cọc.
+
+    Quản lý Phản hồi: Xem danh sách sự cố khách báo, cập nhật chỉ đạo xử lý cho nhân viên.
+
+    Tra cứu hóa đơn: Xem lại bất kỳ hóa đơn nào của bất kỳ phòng nào trong quá khứ.
+
+2. NHÓM CHỨC NĂNG CỦA NHÂN VIÊN (STAFF)
+A. Quản lý Khách thuê & Hợp đồng (Tenant Management)
+
+    Đăng ký khách mới: Nhập thông tin cá nhân khách (Họ tên, CCCD, SĐT).
+
+    Lập hợp đồng số: Upload ảnh chụp hợp đồng giấy và ảnh CCCD khách lên hệ thống.
+
+    Quản lý Xe: Nhập số lượng xe, loại xe và biển số xe của từng phòng.
+
+    Cập nhật người ở: Thay đổi số lượng người ở thực tế trong phòng khi có biến động.
+
+B. Vận hành & Thu phí hàng tháng (Operations)
+
+    Chốt chỉ số điện nước: Đi từng phòng nhập số điện mới, số nước mới vào cuối tháng.
+
+    Tính toán hóa đơn: Hệ thống tự động tổng hợp (Tiền phòng + Điện + Nước + Xe + Rác).
+
+    Xuất/Xem hóa đơn: Hiển thị chi tiết hóa đơn để giải thích cho khách thuê.
+
+    Xác nhận thanh toán: Đánh dấu "Đã thu tiền" khi khách đóng tiền mặt hoặc chuyển khoản.
+
+C. Tương tác & Cá nhân (Interaction)
+
+    Ghi nhận sự cố: Nhập các phản hồi, hỏng hóc từ khách hàng để báo cáo lên Admin.
+
+    Theo dõi ca trực: Xem lịch làm việc cá nhân đã được hệ thống sắp xếp.

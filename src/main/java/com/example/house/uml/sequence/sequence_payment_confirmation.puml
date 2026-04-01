@@ -1,0 +1,40 @@
+@startuml
+skinparam style strictuml
+skinparam maxMessageSize 150
+
+actor "Nhân viên" as Staff
+participant "Giao diện\nThanh toán" as UI
+participant "Máy chủ\n(Hệ thống)" as Server
+database "Bảng\nHOA_DON" as DB
+
+== 1. Tra cứu hóa đơn chưa thanh toán ==
+Staff -> UI : 1. Mở danh sách hóa đơn chờ thu tiền
+activate UI
+
+UI -> Server : 2. Yêu cầu lấy dữ liệu hóa đơn nợ
+activate Server
+
+Server -> DB : 3. Truy vấn danh sách\n(SELECT * FROM HOA_DON\nWHERE da_thanh_toan = FALSE)
+activate DB
+DB --> Server : 4. Trả về danh sách hóa đơn nợ
+deactivate DB
+
+Server --> UI : 5. Trả kết quả dữ liệu
+UI --> Staff : 6. Hiển thị danh sách lên màn hình
+deactivate Server
+
+== 2. Xác nhận thu tiền ==
+Staff -> UI : 7. Chọn một hóa đơn và bấm\n"Xác nhận đã thanh toán"
+UI -> Server : 8. Gửi yêu cầu cập nhật (mã hóa đơn)
+activate Server
+
+Server -> DB : 9. Cập nhật trạng thái\n(UPDATE HOA_DON\nSET da_thanh_toan = TRUE,\nnhan_vien_id = [Mã nhân viên thu tiền]\nWHERE id = ...)
+activate DB
+DB --> Server : 10. Xác nhận lưu thành công
+deactivate DB
+
+Server --> UI : 11. Trả về thông báo thành công
+UI --> Staff : 12. Hiển thị "Đã thu tiền thành công" \nvà làm mới danh sách
+deactivate Server
+deactivate UI
+@enduml

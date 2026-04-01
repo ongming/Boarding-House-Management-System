@@ -1,0 +1,65 @@
+@startuml
+skinparam style strictuml
+skinparam maxMessageSize 150
+
+actor "Nhân viên" as Staff
+participant "Giao diện\nTính tiền" as UI
+participant "Hệ thống\n(Server)" as Server
+database "Bảng\nCHI_SO..." as DB_ChiSo
+database "Bảng\nCAU_HINH_GIA" as DB_Gia
+database "Bảng\nHOP_DONG (JOIN PHONG)" as DB_HD
+database "Bảng\nXE" as DB_Xe
+database "Bảng\nHOA_DON" as DB_HoaDon
+
+Staff -> UI : 1. Nhập chỉ số điện/nước mới\nvà bấm "Tính hóa đơn"
+activate UI
+
+UI -> Server : 2. Gửi Data (phong_id, thang, nam,\nso_dien_moi, so_nuoc_moi)
+activate Server
+
+' Bước 1: Lưu chỉ số điện nước
+Server -> DB_ChiSo : 3. Lấy chỉ số tháng trước\n(SELECT so_dien_moi, so_nuoc_moi\nWHERE thang = thang_truoc)
+activate DB_ChiSo
+DB_ChiSo --> Server : 4. Trả về so_dien_cu, so_nuoc_cu
+deactivate DB_ChiSo
+
+alt so_dien_moi < so_dien_cu HOẶC so_nuoc_moi < so_nuoc_cu
+    Server --> UI : 5a. Báo lỗi "Chỉ số mới phải lớn hơn chỉ số cũ"
+    UI --> Staff : 6a. Hiển thị thông báo lỗi
+else Dữ liệu hợp lệ
+    Server -> DB_ChiSo : 5b. INSERT INTO CHI_SO_DIEN_NUOC
+
+    ' Bước 2: Lấy đơn giá cấu hình
+    Server -> DB_Gia : 6. SELECT ten_loai, don_gia\nFROM CAU_HINH_GIA
+    activate DB_Gia
+    DB_Gia --> Server : 7. Trả về mảng Đơn giá (DIEN, NUOC, RAC, XE_MAY)
+    deactivate DB_Gia
+
+    ' Bước 3: Lấy thông tin Hợp đồng & Phòng
+    Server -> DB_HD : 8. SELECT HD.id, HD.so_luong_nguoi_o, P.gia_thue_co_ban\nFROM HOP_DONG HD JOIN PHONG P\nWHERE HD.phong_id = ... AND HD.trang_thai = 'HIEU_LUC'
+    activate DB_HD
+    DB_HD --> Server : 9. Trả về hop_dong_id, số người, tiền phòng
+    deactivate DB_HD
+
+    ' Bước 4: Đếm số lượng xe
+    Server -> DB_Xe : 10. SELECT COUNT(*) FROM XE\nWHERE hop_dong_id = ...
+    activate DB_Xe
+    DB_Xe --> Server : 11. Trả về số lượng xe
+    deactivate DB_Xe
+
+    ' Bước 5: Server tính toán ngầm
+    Server -> Server : 12. Thực hiện tính toán:\n- tien_dien = (Mới - Cũ) * don_gia['DIEN']\n- tien_nuoc = (Mới - Cũ) * don_gia['NUOC']\n- tien_rac = so_nguoi * don_gia['RAC']\n- tien_xe = so_xe * don_gia['XE_MAY']\n- tong_tien = Sum(các khoản)
+
+    ' Bước 6: Lưu Hóa đơn
+    Server -> DB_HoaDon : 13. INSERT INTO HOA_DON\n(hop_dong_id, tien_phong, tien_dien,\ntien_nuoc, tien_xe, tien_rac, tong_tien)
+    activate DB_HoaDon
+    DB_HoaDon --> Server : 14. Trả về hoa_don_id
+    deactivate DB_HoaDon
+
+    Server --> UI : 15. Trả về chi tiết Hóa đơn vừa tạo
+    UI --> Staff : 16. Hiển thị bản nháp hóa đơn lên màn hình
+end
+
+deactivate Server
+deactivate UI
+@enduml

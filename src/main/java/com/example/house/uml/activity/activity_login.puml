@@ -1,0 +1,31 @@
+    @startuml
+skinparam style strictuml
+
+|Người dùng|
+start
+repeat
+  :Mở trang đăng nhập;
+  :Nhập **ten_dang_nhap** và **mat_khau**;
+  :Nhấn nút Đăng nhập;
+
+  |Hệ thống|
+  :Truy vấn bảng TAI_KHOAN;
+  :Đối chiếu mật khẩu;
+  backward: Hiển thị lỗi "Sai tài khoản hoặc mật khẩu";
+repeat while (Thông tin hợp lệ?) is (Không)
+
+-> Có;
+:Kiểm tra cột **loai_tai_khoan**;
+
+if (Loại tài khoản?) then (ADMIN)
+  :Lưu phiên làm việc Quản trị viên;
+  :Chuyển hướng sang màn hình Quản trị;
+else (NHAN_VIEN)
+  :Lưu phiên làm việc Nhân viên;
+  :Chuyển hướng sang màn hình Nhân viên;
+endif
+
+|Người dùng|
+:Bắt đầu sử dụng hệ thống;
+stop
+@enduml
