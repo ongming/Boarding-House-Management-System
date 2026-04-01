@@ -1,0 +1,149 @@
+@startuml
+skinparam style strictuml
+hide methods
+
+' =========================
+' Enums mapped from SQL ENUM
+' =========================
+enum AccountType {
+  ADMIN
+  NHAN_VIEN
+}
+
+enum RoomStatus {
+  TRONG
+  DA_THUE
+  BAO_TRI
+}
+
+enum ContractStatus {
+  HIEU_LUC
+  KET_THUC
+}
+
+enum InvoiceType {
+  DIN_KY
+  BOI_THUONG
+  QUYET_TOAN
+}
+
+enum FeedbackStatus {
+  CHO_XU_LY
+  DANG_SUA
+  HOAN_THANH
+}
+
+' =========================
+' Classes mapped from tables
+' =========================
+class TaiKhoan <<TAI_KHOAN>> {
+  +id: int
+  +tenDangNhap: String
+  +matKhau: String
+  +hoTen: String
+  +loaiTaiKhoan: AccountType
+}
+
+class NhanVien <<NHAN_VIEN>> {
+  +id: int
+  +taiKhoanId: int
+  +caLamViec: String
+}
+
+class Phong <<PHONG>> {
+  +id: int
+  +soPhong: String
+  +tang: int
+  +coMayLanh: boolean
+  +giaThueCoBan: decimal
+  +danhSachNoiThat: String
+  +trangThai: RoomStatus
+}
+
+class KhachThue <<KHACH_THUE>> {
+  +id: int
+  +hoTen: String
+  +soCccd: String
+  +soDienThoai: String
+}
+
+class HopDong <<HOP_DONG>> {
+  +id: int
+  +khachThueId: int
+  +phongId: int
+  +ngayBatDau: Date
+  +ngayKetThuc: Date
+  +tienCoc: decimal
+  +anhHopDongUrl: String
+  +soLuongNguoiO: int
+  +trangThai: ContractStatus
+}
+
+class Xe <<XE>> {
+  +id: int
+  +hopDongId: int
+  +loaiXe: String
+  +bienSo: String
+}
+
+class ChiSoDienNuoc <<CHI_SO_DIEN_NUOC>> {
+  +id: int
+  +phongId: int
+  +thang: int
+  +nam: int
+  +soDienCu: int
+  +soDienMoi: int
+  +soNuocCu: int
+  +soNuocMoi: int
+  +ngayGhi: DateTime
+}
+
+class HoaDon <<HOA_DON>> {
+  +id: int
+  +hopDongId: int
+  +nhanVienId: int
+  +thang: int
+  +nam: int
+  +tienPhong: decimal
+  +tienDien: decimal
+  +tienNuoc: decimal
+  +tienXe: decimal
+  +tienRac: decimal
+  +tienBoiThuong: decimal
+  +tongTien: decimal
+  +daThanhToan: boolean
+  +ghiChu: String
+  +loaiHoaDon: InvoiceType
+  +ngayLap: DateTime
+}
+
+class PhanHoi <<PHAN_HOI>> {
+  +id: int
+  +phongId: int
+  +nhanVienId: int
+  +noiDung: String
+  +trangThai: FeedbackStatus
+  +ngayGui: DateTime
+}
+
+class CauHinhGia <<CAU_HINH_GIA>> {
+  +id: int
+  +tenLoai: String
+  +donGia: decimal
+}
+
+' =========================
+' Associations from FK constraints
+' =========================
+TaiKhoan "1" -- "0..1" NhanVien : tai_khoan_id
+KhachThue "1" -- "0..*" HopDong : khach_thue_id
+Phong "1" -- "0..*" HopDong : phong_id
+HopDong "1" -- "0..*" Xe : hop_dong_id
+Phong "1" -- "0..*" ChiSoDienNuoc : phong_id
+HopDong "1" -- "0..*" HoaDon : hop_dong_id
+NhanVien "1" -- "0..*" HoaDon : nhan_vien_id
+Phong "1" -- "0..*" PhanHoi : phong_id
+NhanVien "1" -- "0..*" PhanHoi : nhan_vien_id
+
+@enduml
+
