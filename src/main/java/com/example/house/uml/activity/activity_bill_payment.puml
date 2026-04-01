@@ -1,0 +1,35 @@
+@startuml
+skinparam style strictuml
+
+|Nhân viên|
+start
+:Tìm kiếm hóa đơn (Phòng/Khách);
+:Hệ thống hiển thị tổng tiền cần thu;
+
+if (Trạng thái?) then (Đã thanh toán)
+    :Thông báo: "Hóa đơn đã hoàn tất";
+    stop
+else (Chưa thanh toán)
+    :Chọn "Xác nhận thu tiền";
+endif
+
+:Hỏi khách hình thức thanh toán;
+
+if (Hình thức?) then (Chuyển khoản)
+    :Hiển thị QR ngân hàng Admin;
+    :Khách chuyển khoản;
+    :Nhân viên xác nhận tiền đã đi (trên máy khách);
+else (Tiền mặt)
+    :Nhận tiền mặt từ khách;
+endif
+
+|Hệ thống|
+:Cập nhật **da_thanh_toan = TRUE**;
+:Lưu **hinh_thuc_thanh_toan**;
+:Ghi nhận **ngay_thanh_toan**;
+
+|Nhân viên|
+:Thông báo thu tiền thành công;
+:Xuất hóa đơn/Biên nhận;
+stop
+@enduml

@@ -1,0 +1,42 @@
+@startuml
+skinparam style strictuml
+skinparam maxMessageSize 150
+
+actor "Nhân viên" as Staff
+participant "IncidentPanel\n(View)" as View
+participant "IncidentController" as Controller
+participant "IncidentService" as Service
+database "MySQL\n(BoardingHouse_DB)" as DB
+
+Note over Staff, DB: QUY TRÌNH GHI NHẬN VÀ CẬP NHẬT SỰ CỐ
+
+Staff -> View : 1. Nhập nội dung sự cố & phòng
+View -> Controller : 2. reportIncident(roomId, content)
+activate Controller
+
+Controller -> Service : 3. saveIncident(roomId, content, currentStaffId)
+activate Service
+
+Service -> DB : 4. INSERT INTO PHAN_HOI (trang_thai = 'CHO_XU_LY')
+activate DB
+DB -->> Service : 5. Success
+deactivate DB
+
+Service -->> Controller : 6. Incident Reported
+deactivate Service
+Controller -->> View : 7. Hiển thị: "Đã báo Admin"
+
+Note over Staff, DB: Sau khi thợ sửa xong
+
+Staff -> View : 8. Bấm nút "Xác nhận hoàn thành"
+View -> Controller : 9. resolveIncident(incidentId)
+activate Controller
+Controller -> Service : 10. updateIncidentStatus(incidentId, 'HOAN_THANH')
+activate Service
+Service -> DB : 11. UPDATE PHAN_HOI SET trang_thai = 'HOAN_THANH'
+DB -->> Service : 12. Success
+Service -->> Controller : 13. Resolved
+deactivate Service
+Controller -->> View : 14. Hiển thị trạng thái mới
+deactivate Controller
+@enduml

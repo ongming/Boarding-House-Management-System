@@ -2,37 +2,36 @@
 skinparam style strictuml
 skinparam maxMessageSize 150
 
-actor "Người dùng\n(Admin/Nhân viên)" as User
-participant "Giao diện\nĐăng nhập" as UI
-participant "Hệ thống\n(Máy chủ)" as Server
-database "CSDL\n(Bảng TAI_KHOAN)" as DB
+actor "Người dùng" as User
+participant "LoginFrame\n(View)" as View
+participant "AuthController" as Controller
+participant "AuthService" as Service
+database "MySQL\n(BoardingHouse_DB)" as DB
 
-User -> UI : 1. Nhập ten_dang_nhap & mat_khau\nvà bấm Đăng nhập
-activate UI
+Note over User, DB: QUY TRÌNH ĐĂNG NHẬP VÀ PHÂN QUYỀN
 
-UI -> Server : 2. Gửi yêu cầu xác thực\n(ten_dang_nhap, mat_khau)
-activate Server
+User -> View : 1. Nhập username & password
+View -> Controller : 2. login(username, password)
+activate Controller
 
-Server -> DB : 3. Truy vấn tìm tài khoản\n(SELECT * FROM TAI_KHOAN\nWHERE ten_dang_nhap = ...)
+Controller -> Service : 3. authenticate(username, password)
+activate Service
+
+Service -> DB : 4. Find TAI_KHOAN by username
 activate DB
-DB --> Server : 4. Trả về kết quả (thông tin tài khoản hoặc null)
+DB -->> Service : 5. Account Object
 deactivate DB
 
-alt Tài khoản không tồn tại hoặc sai mật khẩu
-    Server --> UI : 5a. Trả về thông báo lỗi
-    UI --> User : 6a. Hiển thị "Sai tài khoản hoặc mật khẩu"
-else Xác thực thành công
-    Server -> Server : 5b. Tạo phiên làm việc (Session/Token)
+Service -> Service : 6. Check Password (BCrypt/MD5)
 
-    alt loai_tai_khoan == "ADMIN"
-        Server --> UI : 6b. Trả về Token & Quyền Admin
-        UI --> User : 7b. Chuyển hướng sang Trang Quản trị
-    else loai_tai_khoan == "NHAN_VIEN"
-        Server --> UI : 6c. Trả về Token & Quyền Nhân viên
-        UI --> User : 7c. Chuyển hướng sang Trang Nhân viên
-    end
+alt Thông tin hợp lệ
+    Service -->> Controller : 7. Auth Success (Role: ADMIN/NHAN_VIEN)
+    Controller -->> View : 8. Chuyển hướng theo loai_tai_khoan
+else Thông tin sai
+    Service -->> Controller : 9. Auth Failed
+    Controller -->> View : 10. Hiển thị lỗi: "Sai tài khoản/mật khẩu"
 end
 
-deactivate Server
-deactivate UI
+deactivate Service
+deactivate Controller
 @enduml

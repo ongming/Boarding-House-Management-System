@@ -1,0 +1,57 @@
+@startuml
+skinparam style strictuml
+skinparam maxMessageSize 150
+
+actor "Nhân viên" as Staff
+participant "BillingPanel\n(View)" as View
+participant "BillingController" as Controller
+participant "BillingService" as Service
+database "MySQL\n(BoardingHouse_DB)" as DB
+
+Note over Staff, DB: QUY TRÌNH TÍNH TOÁN HÓA ĐƠN ĐỒNG LOẠT HÀNG THÁNG
+
+Staff -> View : 1. Chọn Tháng/Năm & Nhấn "Tính toán"
+View -> Controller : 2. generateMonthlyBills(month, year)
+activate Controller
+
+Controller -> Service : 3. processAutoBilling(month, year)
+activate Service
+
+Service -> DB : 4. Lấy danh sách hợp đồng (trang_thai = 'HIEU_LUC')
+activate DB
+DB -->> Service : 5. List<HopDong>
+deactivate DB
+
+loop Cho mỗi Hợp đồng (HopDong) trong danh sách
+    Service -> DB : 6. Find CHI_SO_DIEN_NUOC (month, year, roomId)
+    activate DB
+    DB -->> Service : 7. Indicators (Số cũ, Số mới)
+    deactivate DB
+
+    Service -> DB : 8. Get unit prices (CAU_HINH_GIA)
+    activate DB
+    DB -->> Service : 9. List<CauHinhGia>
+    deactivate DB
+
+    Service -> DB : 10. Count XE where hop_dong_id = ?
+    activate DB
+    DB -->> Service : 11. Vehicle Count
+    deactivate DB
+
+    Service -> Service : 12. Calculate: totalAmount = (Room + Elec + Water + Vehicle + Trash)
+
+    Service -> DB : 13. INSERT INTO HOA_DON (...)
+    note right: da_thanh_toan = FALSE\nhinh_thuc = 'CHUA_THU'
+    activate DB
+    DB -->> Service : 14. Save Success
+    deactivate DB
+end
+
+Service -->> Controller : 15. Return list of created bills
+deactivate Service
+
+Controller -->> View : 16. Display billing preview
+deactivate Controller
+
+View -->> Staff : 17. Hiển thị danh sách hóa đơn vừa tạo thành công
+@enduml

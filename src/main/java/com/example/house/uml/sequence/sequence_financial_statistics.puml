@@ -1,0 +1,38 @@
+@startuml
+skinparam style strictuml
+
+actor "Admin" as Admin
+participant "ReportPanel\n(View)" as View
+participant "ReportController" as Controller
+participant "ReportService" as Service
+database "MySQL\n(BoardingHouse_DB)" as DB
+
+Note over Admin, DB: QUY TRÌNH TỔNG HỢP DOANH THU
+
+Admin -> View : 1. Chọn thời gian thống kê
+View -> Controller : 2. getRevenueReport(startDate, endDate)
+activate Controller
+
+Controller -> Service : 3. calculateTotalRevenue(startDate, endDate)
+activate Service
+
+Service -> DB : 4. SELECT SUM(tong_tien) FROM HOA_DON WHERE da_thanh_toan = TRUE
+activate DB
+DB -->> Service : 5. Doanh thu từ hóa đơn
+deactivate DB
+
+Service -> DB : 6. SELECT SUM(so_tien) FROM BOI_THUONG WHERE da_thu = TRUE
+activate DB
+DB -->> Service : 7. Doanh thu từ bồi thường
+deactivate DB
+
+Service -> Service : 8. Tổng hợp dữ liệu & Phân loại theo hinh_thuc
+
+Service -->> Controller : 9. Report Data (JSON/Object)
+deactivate Service
+
+Controller -->> View : 10. Render chart & tables
+deactivate Controller
+
+View -->> Admin : 11. Hiển thị biểu đồ doanh thu
+@enduml

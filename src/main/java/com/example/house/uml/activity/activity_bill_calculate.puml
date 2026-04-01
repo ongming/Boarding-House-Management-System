@@ -1,0 +1,42 @@
+@startuml
+skinparam style strictuml
+
+|Nhân viên|
+start
+:Chọn Tháng và Năm cần chốt sổ;
+:Nhấn lệnh "Tính toán hóa đơn đồng loạt";
+
+|Hệ thống|
+:Lấy danh sách **HOP_DONG** có `trang_thai = 'HIEU_LUC'`;
+
+repeat
+  :Truy vấn dữ liệu **PHONG** tương ứng;
+  :Lấy chỉ số điện/nước từ **CHI_SO_DIEN_NUOC** (Số mới, Số cũ);
+  :Lấy đơn giá từ bảng **CAU_HINH_GIA**;
+
+  fork
+    :Lấy **gia_thue_co_ban** từ bảng PHONG;
+  fork again
+    :Tính **tien_dien**, **tien_nuoc**\n((Số mới - Số cũ) * Đơn giá);
+  fork again
+    :Truy vấn số lượng xe từ bảng **XE**\n=> Tính **tien_xe**;
+  fork again
+    :Lấy đơn giá **tien_rac** cố định\n(từ CAU_HINH_GIA);
+  end fork
+
+  :Cộng tổng các khoản thành **tong_tien**;
+  :INSERT bản ghi mới vào bảng **HOA_DON**;
+  :(da_thanh_toan = FALSE, hinh_thuc = 'CHUA_THU');
+
+repeat while (Còn hợp đồng chưa tính?) is (Có)
+-> Không;
+
+:Tổng hợp danh sách hóa đơn vừa tạo;
+:Hiển thị bảng Preview lên màn hình;
+
+|Nhân viên|
+:Kiểm tra rà soát lại các con số;
+:Xác nhận lưu hoặc chỉnh sửa thủ công nếu cần;
+:Gửi thông báo (Zalo/SMS) cho khách thuê;
+stop
+@enduml

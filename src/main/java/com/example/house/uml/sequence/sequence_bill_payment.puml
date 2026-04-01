@@ -1,0 +1,37 @@
+@startuml
+skinparam style strictuml
+skinparam maxMessageSize 150
+
+actor "Nhân viên" as Staff
+participant "PaymentPanel\n(View)" as View
+participant "BillingController" as Controller
+participant "BillingService" as Service
+database "MySQL\n(BoardingHouse_DB)" as DB
+
+Note over Staff, DB: QUY TRÌNH THU TIỀN HÓA ĐƠN (TIỀN MẶT / CHUYỂN KHOẢN)
+
+Staff -> View : 1. Chọn hóa đơn cần thu
+View -> Controller : 2. confirmPayment(billId, paymentType)
+activate Controller
+
+Controller -> Service : 3. processPayment(billId, paymentType)
+activate Service
+
+Service -> DB : 4. Begin Transaction
+activate DB
+
+' Cập nhật hóa đơn
+Service -> DB : 5. UPDATE HOA_DON SET da_thanh_toan = TRUE,\nhinh_thuc_thanh_toan = ?, ngay_thanh_toan = NOW()
+DB -->> Service : 6. Success
+
+Service -> DB : 7. Commit
+deactivate DB
+
+Service -->> Controller : 8. Payment Processed
+deactivate Service
+
+Controller -->> View : 9. Hiển thị thông báo thành công
+deactivate Controller
+
+View -->> Staff : 10. In biên lai cho khách
+@enduml

@@ -1,35 +1,52 @@
 @startuml
 skinparam style strictuml
+' Tinh chỉnh màu sắc cho chuyên nghiệp
+skinparam activity {
+  BackgroundColor White
+  BorderColor Black
+  ArrowColor Black
+}
 
 |Nhân viên|
 start
-:Tiếp nhận yêu cầu trả phòng từ khách;
-:Kiểm tra tình trạng tài sản thực tế trong phòng;
-:Lập phiếu yêu cầu trả phòng (nhập chi phí hư hỏng nếu có);
+:Tiếp nhận yêu cầu trả phòng;
+:Kiểm tra tài sản thực tế;
 
-|Hệ thống|
-:Tổng hợp các hóa đơn chưa thanh toán của phòng;
-:Tính toán số tiền quyết toán cuối cùng
-(Tiền cọc - Nợ hóa đơn - Phí bồi thường);
-:Gửi thông báo "Chờ phê duyệt" đến Admin;
-
-|Admin|
-:Nhận thông báo và xem chi tiết phiếu yêu cầu;
-if (Quyết định phê duyệt?) then (Từ chối)
+if (Có hư hỏng?) then (Có)
+    :Nhập lý do & số tiền bồi thường;
     |Hệ thống|
-    :Báo lỗi và trả phiếu về cho Nhân viên;
-    |Nhân viên|
-    :Kiểm tra lại số liệu và trao đổi lại với khách;
-    stop
-else (Đồng ý)
-    |Hệ thống|
-    :Cập nhật trạng thái Hợp đồng thành "Kết thúc";
-    :Cập nhật trạng thái Phòng thành "Trống";
-    :Vô hiệu hóa các xe đăng ký của phòng này;
+    :Lưu vào bảng **BOI_THUONG** (da_thu = FALSE);
+else (Không)
 endif
 
 |Nhân viên|
-:Hoàn trả tiền cọc (hoặc thu thêm tiền thiếu) từ khách;
-:Thu lại chìa khóa phòng;
+:Yêu cầu quyết toán phòng;
+
+|Hệ thống|
+:Truy vấn Tiền cọc, Hóa đơn nợ & Bồi thường;
+:Tính toán: **Tiền trả khách = Cọc - (Nợ + Bồi thường)**;
+:Hiển thị bảng tổng kết quyết toán;
+
+|Nhân viên|
+:Thỏa thuận con số cuối cùng với khách;
+:Chọn hình thức thanh toán (Tiền mặt/Chuyển khoản);
+
+if (Hình thức là Chuyển khoản?) then (Có)
+    :Yêu cầu khách quét QR Admin;
+    :Nhập **mã giao dịch** đối soát;
+else (Tiền mặt/Trừ cọc)
+    :Xác nhận thu/chi tiền mặt;
+endif
+
+:Bấm "Xác nhận trả phòng & Dọn dẹp";
+
+|Hệ thống|
+:Cập nhật **HOP_DONG** ('KET_THUC');
+:Cập nhật **PHONG** ('TRONG');
+:Xóa dữ liệu trong bảng **XE**;
+:Cập nhật **da_thu = TRUE** (Bồi thường);
+
+|Nhân viên|
+:Thu lại chìa khóa & kết thúc;
 stop
 @enduml
