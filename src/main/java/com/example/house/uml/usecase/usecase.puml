@@ -9,7 +9,6 @@ rectangle "Hệ thống quản lý" {
   usecase "Dang nhap" as UC_Login
 
   package "Nhan vien" as StaffPkg {
-    usecase "Dang ky khach moi" as UC_Tenant
     usecase "Lap hop dong + upload anh" as UC_Contract
     usecase "Quan ly xe (loai/bien so)" as UC_Vehicle
     usecase "Cap nhat so nguoi o" as UC_Occupancy
@@ -25,7 +24,6 @@ rectangle "Hệ thống quản lý" {
     usecase "Thiet lap don gia" as UC_Config
     usecase "Quan ly tang/phong" as UC_Floor
     usecase "Cap tai khoan nhan vien" as UC_Staff
-    usecase "Xep ca AI" as UC_AISchedule
     usecase "Thong ke doanh thu" as UC_Revenue
     usecase "Phe duyet tra phong" as UC_Checkout
     usecase "Quan ly/chi dao phan hoi" as UC_FeedbackDir
@@ -34,7 +32,6 @@ rectangle "Hệ thống quản lý" {
 }
 
 Staff --> UC_Login
-Staff --> UC_Tenant
 Staff --> UC_Contract
 Staff --> UC_Vehicle
 Staff --> UC_Occupancy
@@ -49,7 +46,6 @@ Admin --> UC_Login
 Admin --> UC_Config
 Admin --> UC_Floor
 Admin --> UC_Staff
-Admin --> UC_AISchedule
 Admin --> UC_Revenue
 Admin --> UC_Checkout
 Admin --> UC_FeedbackDir

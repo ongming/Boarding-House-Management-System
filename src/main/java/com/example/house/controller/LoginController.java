@@ -10,7 +10,11 @@ public class LoginController {
         this.authService = authService;
     }
 
+    public Account authenticate(String username, String password) {
+        return authService.authenticate(username, password);
+    }
+
     public Account login(String username, String password) {
-        return authService.login(username, password);
+        return authenticate(username, password);
     }
 }

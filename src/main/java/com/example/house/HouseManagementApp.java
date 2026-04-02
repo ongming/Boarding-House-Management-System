@@ -24,7 +24,7 @@ public class HouseManagementApp extends Application {
         LoginController loginController = new LoginController(authService);
 
         LoginView loginView = new LoginView(loginController);
-        Scene scene = new Scene(loginView.getRoot(), 460, 320);
+        Scene scene = new Scene(loginView.getRoot(), 500, 420);
 
         primaryStage.setTitle("Boarding House Management - Login");
         primaryStage.setScene(scene);

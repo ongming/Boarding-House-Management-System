@@ -14,7 +14,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public Account login(String username, String password) {
+    public Account authenticate(String username, String password) {
         if (username == null || username.isBlank()) {
             throw new IllegalArgumentException("Vui long nhap ten dang nhap");
         }
