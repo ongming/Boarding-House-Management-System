@@ -1,0 +1,42 @@
+@startuml
+skinparam style strictuml
+skinparam maxMessageSize 150
+
+actor "Admin" as Admin
+participant "StaffAccountPanel\n(View)" as View
+participant "StaffAccountController" as Controller
+participant "StaffAccountService" as Service
+database "MySQL\n(BoardingHouse_DB)" as DB
+
+Note over Admin, DB: CREATE STAFF ACCOUNT (ADMIN)
+
+Admin -> View : 1. Open staff account screen
+View -> Controller : 2. submitNewStaff(username, password, fullName, shiftInfo)
+activate Controller
+Controller -> Service : 3. createStaffAccount(data)
+activate Service
+
+Service -> DB : 4. SELECT COUNT(*) FROM TAI_KHOAN WHERE ten_dang_nhap = ?
+activate DB
+DB -->> Service : 5. count
+Deactivate DB
+
+alt Username exists
+    Service -->> Controller : 6. Error: duplicate username
+else Username available
+    Service -> Service : 7. Hash password
+    Service -> DB : 8. Begin Transaction
+    activate DB
+    Service -> DB : 9. INSERT INTO TAI_KHOAN (loai_tai_khoan = 'NHAN_VIEN')
+    DB -->> Service : 10. tai_khoan_id
+    Service -> DB : 11. INSERT INTO NHAN_VIEN (tai_khoan_id, ca_lam_viec)
+    Service -> DB : 12. Commit
+    DB -->> Service : 13. Success
+    deactivate DB
+    Service -->> Controller : 14. Create success
+end
+
+Deactivate Service
+Controller -->> View : 15. Show result message
+Deactivate Controller
+@enduml

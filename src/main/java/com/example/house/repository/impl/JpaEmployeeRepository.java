@@ -19,5 +19,23 @@ public class JpaEmployeeRepository extends JpaRepositorySupport implements Emplo
                 .getResultStream()
                 .findFirst());
     }
+
+    @Override
+    public Employee save(Employee employee) {
+        return inTransaction(em -> {
+            if (employee.getId() == null) {
+                em.persist(employee);
+                return employee;
+            }
+            return em.merge(employee);
+        });
+    }
+
+    @Override
+    public java.util.List<Employee> findAll() {
+        return withEntityManager(em -> em.createQuery(
+                "SELECT e FROM Employee e ORDER BY e.id DESC", Employee.class)
+                .getResultList());
+    }
 }
 

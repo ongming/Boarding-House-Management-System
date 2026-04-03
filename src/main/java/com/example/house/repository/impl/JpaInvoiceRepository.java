@@ -2,6 +2,7 @@ package com.example.house.repository.impl;
 
 import com.example.house.model.entity.Invoice;
 import com.example.house.repository.staff.InvoiceRepository;
+import jakarta.persistence.TypedQuery;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,6 +40,42 @@ public class JpaInvoiceRepository extends JpaRepositorySupport implements Invoic
                 .setParameter("month", month)
                 .setParameter("year", year)
                 .getSingleResult() > 0);
+    }
+
+    @Override
+    public List<Invoice> findByFilters(String roomNumber, Integer month, Integer year, Boolean paid) {
+        return withEntityManager(em -> {
+            StringBuilder jpql = new StringBuilder("SELECT i FROM Invoice i WHERE 1=1");
+
+            if (roomNumber != null && !roomNumber.isBlank()) {
+                jpql.append(" AND LOWER(i.contract.room.roomNumber) LIKE :roomNumber");
+            }
+            if (month != null) {
+                jpql.append(" AND i.month = :month");
+            }
+            if (year != null) {
+                jpql.append(" AND i.year = :year");
+            }
+            if (paid != null) {
+                jpql.append(" AND i.paid = :paid");
+            }
+            jpql.append(" ORDER BY i.id DESC");
+
+            TypedQuery<Invoice> query = em.createQuery(jpql.toString(), Invoice.class);
+            if (roomNumber != null && !roomNumber.isBlank()) {
+                query.setParameter("roomNumber", "%" + roomNumber.trim().toLowerCase() + "%");
+            }
+            if (month != null) {
+                query.setParameter("month", month);
+            }
+            if (year != null) {
+                query.setParameter("year", year);
+            }
+            if (paid != null) {
+                query.setParameter("paid", paid);
+            }
+            return query.getResultList();
+        });
     }
 }
 

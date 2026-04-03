@@ -1,0 +1,68 @@
+@startuml
+skinparam style strictuml
+skinparam maxMessageSize 150
+
+actor "Admin" as Admin
+participant "CheckoutApprovalPanel\n(View)" as View
+participant "CheckoutApprovalController" as Controller
+participant "CheckoutApprovalService" as Service
+database "MySQL\n(BoardingHouse_DB)" as DB
+
+Note over Admin, DB: CHECKOUT APPROVAL (ADMIN)
+
+Admin -> View : 1. Open checkout approval list
+View -> Controller : 2. loadPendingCheckouts()
+activate Controller
+Controller -> Service : 3. getPendingCheckouts()
+activate Service
+Service -> DB : 4. SELECT * FROM HOP_DONG WHERE trang_thai = 'HIEU_LUC'
+activate DB
+DB -->> Service : 5. contractList
+Deactivate DB
+Service -->> Controller : 6. contractList
+Deactivate Service
+Controller -->> View : 7. Render pending list
+Deactivate Controller
+
+Admin -> View : 8. Select contract for summary
+View -> Controller : 9. getCheckoutSummary(contractId)
+activate Controller
+Controller -> Service : 10. buildCheckoutSummary(contractId)
+activate Service
+Service -> DB : 11. SELECT tien_coc FROM HOP_DONG WHERE id = ?
+activate DB
+DB -->> Service : 12. tien_coc
+Deactivate DB
+Service -> DB : 13. SELECT SUM(tong_tien) FROM HOA_DON WHERE hop_dong_id = ? AND da_thanh_toan = FALSE
+activate DB
+DB -->> Service : 14. tong_no
+Deactivate DB
+Service -> DB : 15. SELECT SUM(so_tien) FROM BOI_THUONG WHERE hop_dong_id = ? AND da_thu = FALSE
+activate DB
+DB -->> Service : 16. tong_boi_thuong
+Deactivate DB
+Service -> Service : 17. tien_tra = tien_coc - (tong_no + tong_boi_thuong)
+Service -->> Controller : 18. summaryData
+Deactivate Service
+Controller -->> View : 19. Show summary
+Deactivate Controller
+
+Admin -> View : 20. Approve checkout (paymentMethod, roomStatus)
+View -> Controller : 21. approveCheckout(contractId, paymentMethod, roomStatus)
+activate Controller
+Controller -> Service : 22. finalizeCheckout(contractId, paymentMethod, roomStatus)
+activate Service
+Service -> DB : 23. Begin Transaction
+activate DB
+Service -> DB : 24. UPDATE HOP_DONG SET trang_thai = 'KET_THUC'
+Service -> DB : 25. UPDATE PHONG SET trang_thai = roomStatus
+Service -> DB : 26. DELETE FROM XE WHERE hop_dong_id = ?
+Service -> DB : 27. UPDATE BOI_THUONG SET da_thu = TRUE, hinh_thuc_thanh_toan = ?
+Service -> DB : 28. Commit
+DB -->> Service : 29. Success
+Deactivate DB
+Service -->> Controller : 30. Approval success
+Deactivate Service
+Controller -->> View : 31. Show confirmation
+Deactivate Controller
+@enduml

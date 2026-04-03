@@ -1,0 +1,40 @@
+@startuml
+skinparam style strictuml
+skinparam maxMessageSize 150
+
+actor "Admin" as Admin
+participant "InvoiceLookupPanel\n(View)" as View
+participant "InvoiceLookupController" as Controller
+participant "InvoiceLookupService" as Service
+database "MySQL\n(BoardingHouse_DB)" as DB
+
+Note over Admin, DB: INVOICE LOOKUP (ADMIN)
+
+Admin -> View : 1. Open invoice lookup screen
+View -> Controller : 2. searchInvoices(filters)
+activate Controller
+Controller -> Service : 3. findInvoices(filters)
+activate Service
+Service -> DB : 4. SELECT * FROM HOA_DON WHERE filters
+activate DB
+DB -->> Service : 5. invoiceList
+Deactivate DB
+Service -->> Controller : 6. invoiceList
+Deactivate Service
+Controller -->> View : 7. Render invoice list
+Deactivate Controller
+
+Admin -> View : 8. Select invoice details
+View -> Controller : 9. getInvoiceDetail(invoiceId)
+activate Controller
+Controller -> Service : 10. getInvoiceDetail(invoiceId)
+activate Service
+Service -> DB : 11. SELECT * FROM HOA_DON WHERE id = ?
+activate DB
+DB -->> Service : 12. invoiceDetail
+Deactivate DB
+Service -->> Controller : 13. invoiceDetail
+Deactivate Service
+Controller -->> View : 14. Show invoice detail
+Deactivate Controller
+@enduml

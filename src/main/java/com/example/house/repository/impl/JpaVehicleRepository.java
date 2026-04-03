@@ -39,5 +39,13 @@ public class JpaVehicleRepository extends JpaRepositorySupport implements Vehicl
                 .setParameter("contractId", contractId)
                 .getSingleResult());
     }
+
+    @Override
+    public int deleteByContractId(Integer contractId) {
+        return inTransaction(em -> em.createQuery(
+                "DELETE FROM Vehicle v WHERE v.contract.id = :contractId")
+                .setParameter("contractId", contractId)
+                .executeUpdate());
+    }
 }
 

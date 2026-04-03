@@ -38,5 +38,16 @@ public class JpaRoomRepository extends JpaRepositorySupport implements RoomRepos
             return em.merge(room);
         });
     }
+
+    @Override
+    public void deleteById(Integer id) {
+        inTransaction(em -> {
+            Room room = em.find(Room.class, id);
+            if (room != null) {
+                em.remove(room);
+            }
+            return null;
+        });
+    }
 }
 

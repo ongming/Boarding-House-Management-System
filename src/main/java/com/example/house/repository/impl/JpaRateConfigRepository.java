@@ -23,5 +23,16 @@ public class JpaRateConfigRepository extends JpaRepositorySupport implements Rat
                 .getResultStream()
                 .findFirst());
     }
+
+    @Override
+    public RateConfig save(RateConfig config) {
+        return inTransaction(em -> {
+            if (config.getId() == null) {
+                em.persist(config);
+                return config;
+            }
+            return em.merge(config);
+        });
+    }
 }
 

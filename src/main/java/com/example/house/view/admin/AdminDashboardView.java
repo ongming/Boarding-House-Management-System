@@ -1,6 +1,9 @@
 package com.example.house.view.admin;
 
 import javafx.animation.FadeTransition;
+import com.example.house.view.admin.content.AdminContentFactory;
+import com.example.house.view.admin.content.DefaultAdminContentFactory;
+import com.example.house.view.admin.data.JpaAdminDataStore;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -14,7 +17,6 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
@@ -23,6 +25,7 @@ public class AdminDashboardView {
     private final BorderPane root;
     private final BorderPane contentPane;
     private final Runnable onLogout;
+    private final AdminContentFactory contentFactory;
 
     public AdminDashboardView(String fullName) {
         this(fullName, null);
@@ -32,6 +35,7 @@ public class AdminDashboardView {
         this.root = new BorderPane();
         this.contentPane = new BorderPane();
         this.onLogout = onLogout;
+        this.contentFactory = new DefaultAdminContentFactory(new JpaAdminDataStore());
 
         root.setStyle("-fx-background-color: #f4f6f8;");
         root.setTop(buildHeader(fullName));
@@ -39,10 +43,7 @@ public class AdminDashboardView {
 
         contentPane.setPadding(new Insets(24));
         contentPane.setStyle("-fx-background-color: #ffffff;");
-        contentPane.setCenter(buildFeaturePlaceholder(
-            "Tổng quan quản trị",
-            "Chọn chức năng bên trái để cấu hình hệ thống và giám sát vận hành."
-        ));
+        contentPane.setCenter(contentFactory.createContent(AdminFeature.OVERVIEW));
         root.setCenter(contentPane);
     }
 
@@ -95,16 +96,8 @@ public class AdminDashboardView {
         menuTitle.setFont(Font.font("Segoe UI", FontWeight.BOLD, 13));
         menuTitle.setTextFill(Color.web("#475569"));
 
-        ListView<String> featureList = new ListView<>();
-        featureList.setItems(FXCollections.observableArrayList(
-            "⚙ Thiết lập đơn giá",
-            "🏢 Quản lý tầng / phòng",
-            "👤 Cấp tài khoản nhân viên",
-            "📈 Thống kê doanh thu",
-            "✅ Phê duyệt trả phòng",
-            "🛠 Quản lý / chỉ đạo phản hồi",
-            "🧾 Tra cứu hóa đơn"
-        ));
+        ListView<AdminFeature> featureList = new ListView<>();
+        featureList.setItems(FXCollections.observableArrayList(AdminFeature.values()));
         featureList.setCellFactory(param -> new AdminMenuCell());
         featureList.setPrefHeight(560);
         featureList.setStyle("-fx-padding: 4; -fx-font-size: 12;");
@@ -113,8 +106,7 @@ public class AdminDashboardView {
             if (selectedItem == null) {
                 return;
             }
-            String featureName = selectedItem.replaceAll("^[^\\s]*\\s+", "");
-            updateContent(featureName);
+            updateContent(selectedItem);
         });
 
         featureList.getSelectionModel().selectFirst();
@@ -124,16 +116,13 @@ public class AdminDashboardView {
         return menuBox;
     }
 
-    private void updateContent(String featureName) {
+    private void updateContent(AdminFeature feature) {
         FadeTransition fadeOut = new FadeTransition(Duration.millis(180), contentPane);
         fadeOut.setFromValue(1.0);
         fadeOut.setToValue(0.0);
 
         fadeOut.setOnFinished(event -> {
-            contentPane.setCenter(buildFeaturePlaceholder(
-                featureName,
-                "Màn hình này đang ở bản MVP. Bạn có thể nối service/repository tương ứng ở bước tiếp theo."
-            ));
+            contentPane.setCenter(contentFactory.createContent(feature));
 
             FadeTransition fadeIn = new FadeTransition(Duration.millis(260), contentPane);
             fadeIn.setFromValue(0.0);
@@ -144,36 +133,14 @@ public class AdminDashboardView {
         fadeOut.play();
     }
 
-    private VBox buildFeaturePlaceholder(String featureName, String description) {
-        VBox box = new VBox(14);
-        box.setPadding(new Insets(20));
-        box.setStyle("-fx-border-color: #dbe2ea; -fx-border-width: 1; -fx-border-radius: 6;");
-
-        Label title = new Label(featureName);
-        title.setFont(Font.font("Segoe UI", FontWeight.BOLD, 24));
-        title.setTextFill(Color.web("#1f2937"));
-
-        Line line = new Line(0, 0, 460, 0);
-        line.setStroke(Color.web("#2563eb"));
-        line.setStrokeWidth(2);
-
-        Label desc = new Label(description);
-        desc.setWrapText(true);
-        desc.setLineSpacing(4);
-        desc.setFont(Font.font("Segoe UI", 13));
-        desc.setTextFill(Color.web("#64748b"));
-
-        box.getChildren().addAll(title, line, desc);
-        return box;
-    }
 
     public BorderPane getRoot() {
         return root;
     }
 
-    private static class AdminMenuCell extends ListCell<String> {
+    private static class AdminMenuCell extends ListCell<AdminFeature> {
         @Override
-        protected void updateItem(String item, boolean empty) {
+        protected void updateItem(AdminFeature item, boolean empty) {
             super.updateItem(item, empty);
             if (empty || item == null) {
                 setText(null);
@@ -182,7 +149,7 @@ public class AdminDashboardView {
                 return;
             }
 
-            setText(item);
+            setText(item.getMenuLabel());
             setFont(Font.font("Segoe UI", 12));
             setPadding(new Insets(8, 12, 8, 12));
 

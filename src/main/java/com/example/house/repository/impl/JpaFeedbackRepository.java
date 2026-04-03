@@ -1,6 +1,7 @@
 package com.example.house.repository.impl;
 
 import com.example.house.model.entity.Feedback;
+import com.example.house.model.enums.FeedbackStatus;
 import com.example.house.repository.staff.FeedbackRepository;
 
 import java.util.List;
@@ -27,6 +28,14 @@ public class JpaFeedbackRepository extends JpaRepositorySupport implements Feedb
     public List<Feedback> findAll() {
         return withEntityManager(em -> em.createQuery(
                 "SELECT f FROM Feedback f ORDER BY f.id DESC", Feedback.class)
+                .getResultList());
+    }
+
+    @Override
+    public List<Feedback> findByStatus(FeedbackStatus status) {
+        return withEntityManager(em -> em.createQuery(
+                "SELECT f FROM Feedback f WHERE f.status = :status ORDER BY f.id DESC", Feedback.class)
+                .setParameter("status", status)
                 .getResultList());
     }
 }

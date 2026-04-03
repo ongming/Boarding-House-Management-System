@@ -12,5 +12,7 @@ public interface VehicleRepository {
     List<Vehicle> findByContractId(Integer contractId);
 
     long countByContractId(Integer contractId);
+
+    int deleteByContractId(Integer contractId);
 }
 

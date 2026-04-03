@@ -10,5 +10,7 @@ public interface RateConfigRepository {
     List<RateConfig> findAll();
 
     Optional<RateConfig> findByType(RateType type);
+
+    RateConfig save(RateConfig config);
 }
 

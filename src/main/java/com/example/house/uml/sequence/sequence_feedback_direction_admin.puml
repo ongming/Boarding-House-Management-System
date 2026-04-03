@@ -1,0 +1,40 @@
+@startuml
+skinparam style strictuml
+skinparam maxMessageSize 150
+
+actor "Admin" as Admin
+participant "FeedbackManagementPanel\n(View)" as View
+participant "FeedbackManagementController" as Controller
+participant "FeedbackManagementService" as Service
+database "MySQL\n(BoardingHouse_DB)" as DB
+
+Note over Admin, DB: INCIDENT DIRECTION (ADMIN)
+
+Admin -> View : 1. Open incident management screen
+View -> Controller : 2. loadPendingIncidents()
+activate Controller
+Controller -> Service : 3. getIncidentsByStatus('CHO_XU_LY')
+activate Service
+Service -> DB : 4. SELECT * FROM PHAN_HOI WHERE trang_thai = 'CHO_XU_LY'
+activate DB
+DB -->> Service : 5. incidentList
+Deactivate DB
+Service -->> Controller : 6. incidentList
+Deactivate Service
+Controller -->> View : 7. Render incident list
+Deactivate Controller
+
+Admin -> View : 8. Assign staff and update status
+View -> Controller : 9. updateIncidentStatus(incidentId, 'DANG_SUA')
+activate Controller
+Controller -> Service : 10. updateIncidentStatus(incidentId, status)
+activate Service
+Service -> DB : 11. UPDATE PHAN_HOI SET trang_thai = ? WHERE id = ?
+activate DB
+DB -->> Service : 12. Success
+Deactivate DB
+Service -->> Controller : 13. Update success
+Deactivate Service
+Controller -->> View : 14. Refresh list and show message
+Deactivate Controller
+@enduml

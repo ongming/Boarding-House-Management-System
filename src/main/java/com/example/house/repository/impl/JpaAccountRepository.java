@@ -26,6 +26,28 @@ public class JpaAccountRepository implements AccountRepository {
     }
 
     @Override
+    public Account save(Account account) {
+        EntityManager entityManager = JpaUntil.getEntityManager();
+        try {
+            entityManager.getTransaction().begin();
+            if (account.getId() == null) {
+                entityManager.persist(account);
+            } else {
+                account = entityManager.merge(account);
+            }
+            entityManager.getTransaction().commit();
+            return account;
+        } catch (RuntimeException ex) {
+            if (entityManager.getTransaction().isActive()) {
+                entityManager.getTransaction().rollback();
+            }
+            throw ex;
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    @Override
     public void close() {
         JpaUntil.shutdown();
     }

@@ -13,5 +13,7 @@ public interface InvoiceRepository {
     List<Invoice> findAll();
 
     boolean existsByContractAndPeriod(Integer contractId, int month, int year);
+
+    List<Invoice> findByFilters(String roomNumber, Integer month, Integer year, Boolean paid);
 }
 

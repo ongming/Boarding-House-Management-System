@@ -1,0 +1,62 @@
+@startuml
+skinparam style strictuml
+skinparam maxMessageSize 150
+
+actor "Admin" as Admin
+participant "RoomManagementPanel\n(View)" as View
+participant "RoomManagementController" as Controller
+participant "RoomManagementService" as Service
+database "MySQL\n(BoardingHouse_DB)" as DB
+
+Note over Admin, DB: ROOM/FLOOR MANAGEMENT (ADMIN)
+
+Admin -> View : 1. Open room management screen
+View -> Controller : 2. loadRooms()
+activate Controller
+Controller -> Service : 3. getRooms()
+activate Service
+Service -> DB : 4. SELECT * FROM PHONG ORDER BY tang, so_phong
+activate DB
+DB -->> Service : 5. roomList
+Deactivate DB
+Service -->> Controller : 6. roomList
+Deactivate Service
+Controller -->> View : 7. Render room list
+Deactivate Controller
+
+Admin -> View : 8. Choose action (Add/Edit/Delete)
+View -> Controller : 9. submitRoomAction(action, roomDTO)
+activate Controller
+Controller -> Service : 10. processRoomAction(action, roomDTO)
+activate Service
+
+alt Add room
+    Service -> Service : 11. Validate unique so_phong and gia_thue_co_ban >= 0
+    alt Invalid input
+        Service -->> Controller : 12. Validation error
+    else Valid
+        Service -> DB : 13. INSERT INTO PHONG
+        Service -->> Controller : 14. Add success
+    end
+else Edit room
+    Service -> Service : 15. Validate room exists and input constraints
+    alt Invalid input
+        Service -->> Controller : 16. Validation error
+    else Valid
+        Service -> DB : 17. UPDATE PHONG
+        Service -->> Controller : 18. Update success
+    end
+else Delete room
+    Service -> DB : 19. SELECT trang_thai FROM PHONG WHERE id = ?
+    alt Room not TRONG
+        Service -->> Controller : 20. Reject delete (room occupied or maintenance)
+    else Room TRONG
+        Service -> DB : 21. DELETE FROM PHONG WHERE id = ?
+        Service -->> Controller : 22. Delete success
+    end
+end
+
+Deactivate Service
+Controller -->> View : 23. Refresh list and show message
+Deactivate Controller
+@enduml

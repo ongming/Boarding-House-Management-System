@@ -13,5 +13,7 @@ public interface RoomRepository {
     Optional<Room> findByRoomNumber(String roomNumber);
 
     Room save(Room room);
+
+    void deleteById(Integer id);
 }
 
