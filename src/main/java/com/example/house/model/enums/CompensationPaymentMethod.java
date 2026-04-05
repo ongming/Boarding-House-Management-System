@@ -5,3 +5,4 @@ public enum CompensationPaymentMethod {
     CHUYEN_KHOAN,
     TRU_VAO_COC
 }
+

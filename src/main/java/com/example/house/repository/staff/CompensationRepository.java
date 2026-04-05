@@ -14,3 +14,4 @@ public interface CompensationRepository {
 
     List<Compensation> findByContractIdAndCollected(Integer contractId, boolean collected);
 }
+

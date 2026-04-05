@@ -15,7 +15,7 @@ public class DashboardView {
         Label title = new Label("Boarding House Dashboard");
         title.setFont(Font.font(20));
 
-        Label greeting = new Label("Xin chao, " + fullName + "!");
+        Label greeting = new Label("Xin chào, " + fullName + "!");
         greeting.setFont(Font.font(14));
 
         BorderPane content = new BorderPane();
@@ -29,3 +29,4 @@ public class DashboardView {
         return root;
     }
 }
+

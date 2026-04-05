@@ -1,9 +1,9 @@
 package com.example.house.view.admin;
 
 import javafx.animation.FadeTransition;
-import com.example.house.view.admin.content.AdminContentFactory;
-import com.example.house.view.admin.content.DefaultAdminContentFactory;
-import com.example.house.view.admin.data.JpaAdminDataStore;
+import com.example.house.model.enums.AdminFeature;
+import com.example.house.config.ui.UiConstants;
+import com.example.house.config.ui.VietnameseTextNormalizer;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -27,24 +27,21 @@ public class AdminDashboardView {
     private final Runnable onLogout;
     private final AdminContentFactory contentFactory;
 
-    public AdminDashboardView(String fullName) {
-        this(fullName, null);
-    }
-
-    public AdminDashboardView(String fullName, Runnable onLogout) {
+    public AdminDashboardView(String fullName, Runnable onLogout, AdminContentFactory contentFactory) {
         this.root = new BorderPane();
         this.contentPane = new BorderPane();
         this.onLogout = onLogout;
-        this.contentFactory = new DefaultAdminContentFactory(new JpaAdminDataStore());
+        this.contentFactory = contentFactory;
 
-        root.setStyle("-fx-background-color: #f4f6f8;");
+        root.setStyle(UiConstants.APP_BG);
         root.setTop(buildHeader(fullName));
         root.setLeft(buildMenu());
 
         contentPane.setPadding(new Insets(24));
-        contentPane.setStyle("-fx-background-color: #ffffff;");
+        contentPane.setStyle(UiConstants.CONTENT_SURFACE);
         contentPane.setCenter(contentFactory.createContent(AdminFeature.OVERVIEW));
         root.setCenter(contentPane);
+        VietnameseTextNormalizer.normalizeNodeTree(root);
     }
 
     private HBox buildHeader(String fullName) {
@@ -53,8 +50,7 @@ public class AdminDashboardView {
         HBox header = new HBox(12);
         header.setPadding(new Insets(16, 24, 16, 24));
         header.setAlignment(Pos.CENTER_LEFT);
-        header.setStyle("-fx-background-color: linear-gradient(to right, #1e293b, #2563eb);"
-                + "-fx-border-color: #1e293b; -fx-border-width: 0 0 2 0;");
+        header.setStyle(UiConstants.HEADER_BG);
 
         Circle avatar = new Circle(20);
         avatar.setFill(Color.web("#60a5fa"));
@@ -73,9 +69,7 @@ public class AdminDashboardView {
         HBox.setHgrow(textBox, Priority.ALWAYS);
 
         Button logoutButton = new Button("Đăng xuất");
-        logoutButton.setStyle("-fx-background-color: #dc2626; -fx-text-fill: white;"
-                + "-fx-font-family: 'Segoe UI'; -fx-font-weight: bold; -fx-background-radius: 6;"
-                + "-fx-padding: 8 14 8 14;");
+        logoutButton.setStyle(UiConstants.LOGOUT_BUTTON);
         logoutButton.setOnAction(event -> {
             if (onLogout != null) {
                 onLogout.run();
@@ -89,8 +83,8 @@ public class AdminDashboardView {
     private VBox buildMenu() {
         VBox menuBox = new VBox(8);
         menuBox.setPadding(new Insets(16));
-        menuBox.setPrefWidth(320);
-        menuBox.setStyle("-fx-background-color: #e2e8f0; -fx-border-color: #cbd5e1; -fx-border-width: 0 1 0 0;");
+        menuBox.setPrefWidth(300);
+        menuBox.setStyle(UiConstants.MENU_BG);
 
         Label menuTitle = new Label("CHỨC NĂNG ADMIN");
         menuTitle.setFont(Font.font("Segoe UI", FontWeight.BOLD, 13));
@@ -122,7 +116,9 @@ public class AdminDashboardView {
         fadeOut.setToValue(0.0);
 
         fadeOut.setOnFinished(event -> {
-            contentPane.setCenter(contentFactory.createContent(feature));
+            var content = contentFactory.createContent(feature);
+            contentPane.setCenter(content);
+            VietnameseTextNormalizer.normalizeNodeTree(contentPane);
 
             FadeTransition fadeIn = new FadeTransition(Duration.millis(260), contentPane);
             fadeIn.setFromValue(0.0);
@@ -160,17 +156,14 @@ public class AdminDashboardView {
 
         private void setMenuStyle(boolean hover, boolean selected) {
             if (selected) {
-                setStyle("-fx-background-color: #1d4ed8; -fx-text-fill: white;"
-                        + "-fx-border-radius: 4; -fx-padding: 8 12 8 12;");
+                setStyle(UiConstants.MENU_ITEM_SELECTED);
                 return;
             }
 
             if (hover) {
-                setStyle("-fx-background-color: #3b82f6; -fx-text-fill: white;"
-                        + "-fx-border-radius: 4; -fx-padding: 8 12 8 12;");
+                setStyle(UiConstants.MENU_ITEM_HOVER);
             } else {
-                setStyle("-fx-background-color: transparent; -fx-text-fill: #1f2937;"
-                        + "-fx-padding: 8 12 8 12;");
+                setStyle(UiConstants.MENU_ITEM_NORMAL);
             }
         }
     }

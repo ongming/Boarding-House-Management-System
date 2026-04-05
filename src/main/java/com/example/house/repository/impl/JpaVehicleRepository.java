@@ -49,3 +49,4 @@ public class JpaVehicleRepository extends JpaRepositorySupport implements Vehicl
     }
 }
 
+

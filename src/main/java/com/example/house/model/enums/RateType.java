@@ -7,3 +7,4 @@ public enum RateType {
     XE_MAY
 }
 
+

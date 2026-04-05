@@ -16,3 +16,4 @@ public interface VehicleRepository {
     int deleteByContractId(Integer contractId);
 }
 
+

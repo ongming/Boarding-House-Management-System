@@ -17,3 +17,4 @@ public interface InvoiceRepository {
     List<Invoice> findByFilters(String roomNumber, Integer month, Integer year, Boolean paid);
 }
 
+

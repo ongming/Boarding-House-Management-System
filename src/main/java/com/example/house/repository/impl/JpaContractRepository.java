@@ -1,6 +1,6 @@
 package com.example.house.repository.impl;
 
-import com.example.house.config.JpaUntil;
+import com.example.house.config.JpaUtil;
 import com.example.house.model.entity.Contract;
 import com.example.house.model.enums.ContractStatus;
 import com.example.house.repository.staff.ContractRepository;
@@ -52,7 +52,7 @@ public class JpaContractRepository implements ContractRepository {
     }
 
     private <T> T withEntityManager(Function<EntityManager, T> callback) {
-        EntityManager em = JpaUntil.getEntityManager();
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             return callback.apply(em);
         } finally {
@@ -61,7 +61,7 @@ public class JpaContractRepository implements ContractRepository {
     }
 
     private <T> T inTransaction(Function<EntityManager, T> callback) {
-        EntityManager em = JpaUntil.getEntityManager();
+        EntityManager em = JpaUtil.getEntityManager();
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();

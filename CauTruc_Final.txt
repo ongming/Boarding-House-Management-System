@@ -1,0 +1,117 @@
+BoardingHouseManagementSystem/
+├── src/
+│   └── main/
+│       └── java/
+│           └── com/example/house/
+│               ├── Main.java
+│               ├── HouseManagementApp.java
+│               │
+│               ├── config/
+│               │   ├── JpaUtil.java
+│               │   └── ViewComposition.java
+│               │
+│               ├── controller/
+│               │   ├── auth/
+│               │   │   └── LoginController.java
+│               │   ├── admin/
+│               │   │   ├── AdminController.java
+│               │   │   ├── RateConfigController.java
+│               │   │   ├── RoomManagementController.java
+│               │   │   ├── StaffAccountController.java
+│               │   │   ├── RevenueStatsController.java
+│               │   │   ├── CheckoutApprovalController.java
+│               │   │   ├── FeedbackManagementController.java
+│               │   │   └── AdminInvoiceLookupController.java
+│               │   └── staff/
+│               │       ├── StaffFeatureController.java
+│               │       ├── StaffRoomCatalogController.java
+│               │       ├── ContractController.java
+│               │       ├── VehicleController.java
+│               │       ├── OccupancyController.java
+│               │       ├── MeterReadingController.java
+│               │       ├── BillingController.java
+│               │       ├── PaymentController.java
+│               │       ├── StaffInvoiceLookupController.java
+│               │       ├── StaffFeedbackController.java
+│               │       └── home/StaffHomeCatalog.java
+│               │
+│               ├── model/
+│               │   ├── dto/
+│               │   │   ├── admin/
+│               │   │   └── staff/
+│               │   ├── entity/
+│               │   └── enums/
+│               │
+│               ├── repository/
+│               │   ├── AccountRepository.java
+│               │   ├── admin/
+│               │   │   └── feature/
+│               │   │       ├── AdminRateConfigRepository.java
+│               │   │       ├── AdminRoomRepository.java
+│               │   │       ├── AdminStaffAccountRepository.java
+│               │   │       ├── AdminRevenueRepository.java
+│               │   │       ├── AdminCheckoutRepository.java
+│               │   │       ├── AdminFeedbackRepository.java
+│               │   │       └── AdminInvoiceRepository.java
+│               │   ├── staff/
+│               │   │   ├── feature/
+│               │   │   │   ├── StaffRoomCatalogRepository.java
+│               │   │   │   ├── StaffContractRepository.java
+│               │   │   │   ├── StaffVehicleRepository.java
+│               │   │   │   ├── StaffOccupancyRepository.java
+│               │   │   │   ├── StaffMeterReadingRepository.java
+│               │   │   │   ├── StaffBillingRepository.java
+│               │   │   │   └── StaffFeedbackRepository.java
+│               │   │   ├── CompensationRepository.java
+│               │   │   ├── ContractRepository.java
+│               │   │   ├── EmployeeRepository.java
+│               │   │   ├── FeedbackRepository.java
+│               │   │   ├── InvoiceRepository.java
+│               │   │   ├── RateConfigRepository.java
+│               │   │   ├── RoomRepository.java
+│               │   │   ├── TenantRepository.java
+│               │   │   ├── UtilityReadingRepository.java
+│               │   │   └── VehicleRepository.java
+│               │   └── impl/
+│               │       ├── admin/feature/
+│               │       │   ├── AdminRateConfigRepositoryImpl.java
+│               │       │   ├── AdminRoomRepositoryImpl.java
+│               │       │   ├── AdminStaffAccountRepositoryImpl.java
+│               │       │   ├── AdminRevenueRepositoryImpl.java
+│               │       │   ├── AdminCheckoutRepositoryImpl.java
+│               │       │   ├── AdminFeedbackRepositoryImpl.java
+│               │       │   └── AdminInvoiceRepositoryImpl.java
+│               │       ├── staff/feature/
+│               │       │   ├── StaffRoomCatalogRepositoryImpl.java
+│               │       │   ├── StaffContractRepositoryImpl.java
+│               │       │   ├── StaffVehicleRepositoryImpl.java
+│               │       │   ├── StaffOccupancyRepositoryImpl.java
+│               │       │   ├── StaffMeterReadingRepositoryImpl.java
+│               │       │   ├── StaffBillingRepositoryImpl.java
+│               │       │   └── StaffFeedbackRepositoryImpl.java
+│               │       └── (Jpa entity repositories...)
+│               │
+│               ├── service/
+│               │   ├── AuthService.java
+│               │   ├── admin/
+│               │   ├── staff/
+│               │   └── impl/
+│               │       ├── admin/
+│               │       ├── staff/
+│               │       └── AuthServiceImpl.java
+│               │
+│               └── view/
+│                   ├── auth/LoginView.java
+│                   ├── main/DashboardView.java
+│                   ├── admin/
+│                   │   ├── AdminDashboardView.java
+│                   │   ├── AdminContentFactory.java
+│                   │   ├── DefaultAdminContentFactory.java
+│                   │   └── AdminFeaturePanels.java
+│                   └── staff/
+│                       ├── StaffDashboardView.java
+│                       ├── StaffContentFactory.java
+│                       ├── DefaultStaffContentFactory.java
+│                       ├── StaffHomePanel.java
+│                       └── StaffFeaturePanels.java
+

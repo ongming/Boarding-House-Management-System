@@ -47,3 +47,4 @@ public class JpaUtilityReadingRepository extends JpaRepositorySupport implements
     }
 }
 
+

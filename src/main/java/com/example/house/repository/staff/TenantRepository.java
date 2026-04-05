@@ -6,3 +6,4 @@ public interface TenantRepository {
     Tenant save(Tenant tenant);
 }
 
+

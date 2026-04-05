@@ -14,3 +14,4 @@ public interface RateConfigRepository {
     RateConfig save(RateConfig config);
 }
 
+

@@ -1,13 +1,14 @@
 package com.example.house.view.staff;
 
-import com.example.house.view.staff.content.DefaultStaffContentFactory;
-import com.example.house.view.staff.content.StaffContentFactory;
-import com.example.house.view.staff.data.JpaStaffDataStore;
+import com.example.house.model.enums.StaffFeature;
+import com.example.house.config.ui.UiConstants;
+import com.example.house.config.ui.VietnameseTextNormalizer;
 import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -22,26 +23,36 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
 
+import java.util.Arrays;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
 public class StaffDashboardView {
     private final BorderPane root;
     private final BorderPane contentPane;
     private final Runnable onLogout;
     private final StaffContentFactory contentFactory;
 
-    public StaffDashboardView(String fullName, Runnable onLogout) {
+    public StaffDashboardView(String fullName,
+                              Runnable onLogout,
+                              Function<Consumer<String>, StaffContentFactory> contentFactoryProvider) {
         this.root = new BorderPane();
         this.contentPane = new BorderPane();
         this.onLogout = onLogout;
-        this.contentFactory = new DefaultStaffContentFactory(new JpaStaffDataStore(), this::openContractFromHome);
+        this.contentFactory = contentFactoryProvider.apply(this::openContractFromHome);
+        if (this.contentFactory instanceof DefaultStaffContentFactory defaultFactory) {
+            defaultFactory.setOnContractCreated(this::handleContractCreated);
+        }
 
-        root.setStyle("-fx-background-color: #f5f7fa;");
+        root.setStyle(UiConstants.APP_BG);
         root.setTop(buildHeader(fullName));
         root.setLeft(buildMenu());
 
         contentPane.setPadding(new Insets(24));
-        contentPane.setStyle("-fx-background-color: #ffffff;");
+        contentPane.setStyle(UiConstants.CONTENT_SURFACE);
         contentPane.setCenter(contentFactory.createContent(StaffFeature.HOME));
         root.setCenter(contentPane);
+        VietnameseTextNormalizer.normalizeNodeTree(root);
     }
 
     private VBox buildHeader(String fullName) {
@@ -49,11 +60,11 @@ public class StaffDashboardView {
 
         HBox headerBox = new HBox(12);
         headerBox.setPadding(new Insets(16, 24, 16, 24));
-        headerBox.setStyle("-fx-background-color: linear-gradient(to right, #2c3e50, #3498db); -fx-border-color: #2c3e50; -fx-border-width: 0 0 2 0;");
+        headerBox.setStyle(UiConstants.HEADER_BG);
         headerBox.setAlignment(Pos.CENTER_LEFT);
 
         Circle avatar = new Circle(20);
-        avatar.setFill(Color.web("#3498db"));
+        avatar.setFill(Color.web("#60a5fa"));
         avatar.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0, 0, 0);");
 
         VBox titleBox = new VBox(2);
@@ -63,13 +74,13 @@ public class StaffDashboardView {
 
         Label subtitle = new Label("Xin chào, " + displayName + "!");
         subtitle.setFont(Font.font("Segoe UI", 13));
-        subtitle.setTextFill(Color.web("#ecf0f1"));
+        subtitle.setTextFill(Color.web("#dbeafe"));
 
         titleBox.getChildren().addAll(title, subtitle);
         HBox.setHgrow(titleBox, Priority.ALWAYS);
 
         Button logoutButton = new Button("Đăng xuất");
-        logoutButton.setStyle("-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-family: 'Segoe UI'; -fx-font-weight: bold; -fx-background-radius: 6; -fx-padding: 8 14 8 14;");
+        logoutButton.setStyle(UiConstants.LOGOUT_BUTTON);
         logoutButton.setOnAction(event -> {
             if (onLogout != null) {
                 onLogout.run();
@@ -83,15 +94,19 @@ public class StaffDashboardView {
     private VBox buildMenu() {
         VBox menuBox = new VBox(8);
         menuBox.setPadding(new Insets(16));
-        menuBox.setPrefWidth(280);
-        menuBox.setStyle("-fx-background-color: #ecf0f1; -fx-border-color: #bdc3c7; -fx-border-width: 0 1 0 0;");
+        menuBox.setPrefWidth(300);
+        menuBox.setStyle(UiConstants.MENU_BG);
 
         Label menuTitle = new Label("CHỨC NĂNG");
         menuTitle.setFont(Font.font("Segoe UI", FontWeight.BOLD, 13));
         menuTitle.setTextFill(Color.web("#7f8c8d"));
 
         ListView<StaffFeature> featureList = new ListView<>();
-        featureList.setItems(FXCollections.observableArrayList(StaffFeature.values()));
+        featureList.setItems(FXCollections.observableArrayList(
+                Arrays.stream(StaffFeature.values())
+                        .filter(feature -> feature != StaffFeature.CONTRACT)
+                        .toList()
+        ));
         featureList.setCellFactory(param -> new StaffMenuCell());
         featureList.setPrefHeight(500);
         featureList.setStyle("-fx-padding: 4; -fx-font-size: 12;");
@@ -116,6 +131,7 @@ public class StaffDashboardView {
         fadeOut.setOnFinished(event -> {
             Node content = contentFactory.createContent(feature, context);
             contentPane.setCenter(content);
+            VietnameseTextNormalizer.normalizeNodeTree(contentPane);
             FadeTransition fadeIn = new FadeTransition(Duration.millis(260), contentPane);
             fadeIn.setFromValue(0.0);
             fadeIn.setToValue(1.0);
@@ -127,6 +143,18 @@ public class StaffDashboardView {
 
     private void openContractFromHome(String roomNumber) {
         showFeature(StaffFeature.CONTRACT, roomNumber);
+    }
+
+    private void handleContractCreated(String roomNumber) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Thông báo");
+        alert.setHeaderText("Lập hợp đồng thành công");
+        alert.setContentText("Đã tạo hợp đồng cho phòng " + roomNumber + ".");
+        if (root.getScene() != null) {
+            alert.initOwner(root.getScene().getWindow());
+        }
+        alert.showAndWait();
+        showFeature(StaffFeature.HOME, "reload");
     }
 
     public BorderPane getRoot() {
@@ -154,13 +182,13 @@ public class StaffDashboardView {
 
         private void applyStyle(boolean hover, boolean selected) {
             if (selected) {
-                setStyle("-fx-background-color: #2980b9; -fx-text-fill: white; -fx-border-radius: 4; -fx-padding: 8 12 8 12;");
+                setStyle(UiConstants.MENU_ITEM_SELECTED);
                 return;
             }
             if (hover) {
-                setStyle("-fx-background-color: #3498db; -fx-text-fill: white; -fx-border-radius: 4; -fx-padding: 8 12 8 12;");
+                setStyle(UiConstants.MENU_ITEM_HOVER);
             } else {
-                setStyle("-fx-background-color: transparent; -fx-text-fill: #2c3e50; -fx-padding: 8 12 8 12;");
+                setStyle(UiConstants.MENU_ITEM_NORMAL);
             }
         }
     }

@@ -111,3 +111,4 @@ public class UtilityReading {
         this.recordedAt = recordedAt;
     }
 }
+

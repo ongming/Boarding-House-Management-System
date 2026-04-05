@@ -54,3 +54,4 @@ public class Vehicle {
         this.licensePlate = licensePlate;
     }
 }
+

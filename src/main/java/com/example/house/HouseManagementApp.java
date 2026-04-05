@@ -1,6 +1,6 @@
 package com.example.house;
 
-import com.example.house.controller.LoginController;
+import com.example.house.controller.auth.LoginController;
 import com.example.house.repository.AccountRepository;
 import com.example.house.repository.impl.JpaAccountRepository;
 import com.example.house.service.AuthService;

@@ -5,3 +5,4 @@ public enum InvoicePaymentMethod {
     CHUYEN_KHOAN,
     CHUA_THU
 }
+

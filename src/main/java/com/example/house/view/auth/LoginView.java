@@ -1,12 +1,12 @@
 package com.example.house.view.auth;
 
-import com.example.house.controller.LoginController;
+import com.example.house.config.ViewComposition;
+import com.example.house.controller.auth.LoginController;
 import com.example.house.model.entity.Account;
 import com.example.house.model.enums.AccountType;
-import com.example.house.view.admin.AdminDashboardView;
-import com.example.house.view.common.UiConstants;
+import com.example.house.config.ui.UiConstants;
+import com.example.house.config.ui.VietnameseTextNormalizer;
 import com.example.house.view.main.DashboardView;
-import com.example.house.view.staff.StaffDashboardView;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -22,9 +22,11 @@ import javafx.stage.Stage;
 public class LoginView {
     private final VBox root;
     private final LoginController loginController;
+    private final ViewComposition composition;
 
     public LoginView(LoginController loginController) {
         this.loginController = loginController;
+        this.composition = new ViewComposition();
         this.root = new VBox(UiConstants.SPACING);
         initialize();
     }
@@ -34,7 +36,7 @@ public class LoginView {
         root.setAlignment(Pos.CENTER);
         root.setStyle("-fx-background-color: linear-gradient(to bottom, #f5f7fa, #ecf0f1);");
 
-        Label title = new Label("🏠 Đăng nhập hệ thống");
+        Label title = new Label("Đăng nhập hệ thống");
         title.setFont(javafx.scene.text.Font.font("Segoe UI", javafx.scene.text.FontWeight.BOLD, 26));
         title.setTextFill(javafx.scene.paint.Color.web("#2c3e50"));
 
@@ -112,7 +114,7 @@ public class LoginView {
                 Stage stage = (Stage) root.getScene().getWindow();
                 stage.close();
             } catch (IllegalArgumentException ex) {
-                messageLabel.setText("❌ " + ex.getMessage());
+                messageLabel.setText(ex.getMessage());
             }
         });
 
@@ -132,6 +134,7 @@ public class LoginView {
         );
 
         root.getChildren().add(formBox);
+        VietnameseTextNormalizer.normalizeNodeTree(root);
     }
 
     private void openDashboard(Account account) {
@@ -142,11 +145,11 @@ public class LoginView {
         };
 
         if (account.getAccountType() == AccountType.NHAN_VIEN) {
-            StaffDashboardView staffDashboardView = new StaffDashboardView(account.getFullName(), onLogout);
+            var staffDashboardView = composition.buildStaffDashboard(account.getFullName(), onLogout);
             dashboardStage.setTitle("Bảng điều khiển nhân viên");
             dashboardStage.setScene(new Scene(staffDashboardView.getRoot(), 980, 620));
         } else if (account.getAccountType() == AccountType.ADMIN) {
-            AdminDashboardView adminDashboardView = new AdminDashboardView(account.getFullName(), onLogout);
+            var adminDashboardView = composition.buildAdminDashboard(account.getFullName(), onLogout);
             dashboardStage.setTitle("Bảng điều khiển quản trị");
             dashboardStage.setScene(new Scene(adminDashboardView.getRoot(), 1080, 680));
         } else {

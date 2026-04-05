@@ -17,3 +17,4 @@ public interface ContractRepository {
     Optional<Contract> findActiveByRoomId(Integer roomId);
 }
 
+

@@ -42,3 +42,4 @@ public class JpaCompensationRepository extends JpaRepositorySupport implements C
                 .getResultList());
     }
 }
+

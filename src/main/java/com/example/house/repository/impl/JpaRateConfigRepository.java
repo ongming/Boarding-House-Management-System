@@ -36,3 +36,4 @@ public class JpaRateConfigRepository extends JpaRepositorySupport implements Rat
     }
 }
 
+

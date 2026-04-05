@@ -1,6 +1,6 @@
 package com.example.house.repository.impl;
 
-import com.example.house.config.JpaUntil;
+import com.example.house.config.JpaUtil;
 import com.example.house.model.entity.Account;
 import com.example.house.repository.AccountRepository;
 import jakarta.persistence.EntityManager;
@@ -12,7 +12,7 @@ public class JpaAccountRepository implements AccountRepository {
 
     @Override
     public Optional<Account> findByUsername(String username) {
-        EntityManager entityManager = JpaUntil.getEntityManager();
+        EntityManager entityManager = JpaUtil.getEntityManager();
         try {
             TypedQuery<Account> query = entityManager.createQuery(
                     "SELECT a FROM Account a WHERE LOWER(a.username) = LOWER(:username)",
@@ -27,7 +27,7 @@ public class JpaAccountRepository implements AccountRepository {
 
     @Override
     public Account save(Account account) {
-        EntityManager entityManager = JpaUntil.getEntityManager();
+        EntityManager entityManager = JpaUtil.getEntityManager();
         try {
             entityManager.getTransaction().begin();
             if (account.getId() == null) {
@@ -49,6 +49,6 @@ public class JpaAccountRepository implements AccountRepository {
 
     @Override
     public void close() {
-        JpaUntil.shutdown();
+        JpaUtil.shutdown();
     }
 }

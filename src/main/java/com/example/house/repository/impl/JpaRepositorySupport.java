@@ -1,6 +1,6 @@
 package com.example.house.repository.impl;
 
-import com.example.house.config.JpaUntil;
+import com.example.house.config.JpaUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 
@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 public abstract class JpaRepositorySupport {
     protected <T> T withEntityManager(Function<EntityManager, T> callback) {
-        EntityManager em = JpaUntil.getEntityManager();
+        EntityManager em = JpaUtil.getEntityManager();
         try {
             return callback.apply(em);
         } finally {
@@ -17,7 +17,7 @@ public abstract class JpaRepositorySupport {
     }
 
     protected <T> T inTransaction(Function<EntityManager, T> callback) {
-        EntityManager em = JpaUntil.getEntityManager();
+        EntityManager em = JpaUtil.getEntityManager();
         EntityTransaction tx = em.getTransaction();
         try {
             tx.begin();
@@ -34,4 +34,3 @@ public abstract class JpaRepositorySupport {
         }
     }
 }
-

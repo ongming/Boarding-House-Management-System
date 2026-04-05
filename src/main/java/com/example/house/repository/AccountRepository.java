@@ -14,3 +14,4 @@ public interface AccountRepository extends AutoCloseable {
         // No-op by default for repositories that do not keep resources.
     }
 }
+

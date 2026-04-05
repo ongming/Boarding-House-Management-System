@@ -9,3 +9,4 @@ public interface AuthService {
         return authenticate(username, password);
     }
 }
+
