@@ -1,65 +1,47 @@
 @startuml
 skinparam style strictuml
-skinparam maxMessageSize 150
+skinparam maxMessageSize 190
 
-actor "Nhân viên" as Staff
-participant "ContractPanel\n(View)" as View
+actor "Nhan vien" as Staff
+participant "StaffFeaturePanels.contractPanel\n(View)" as View
+participant "StaffFeatureController\n(Facade)" as Facade
 participant "ContractController" as Controller
-participant "ContractService" as Service
+participant "StaffService" as Service
+participant "StaffContractRepository" as Repository
+participant "JpaStaffDataStore" as DataStore
 database "MySQL\n(BoardingHouse_DB)" as DB
 
-Note over Staff, DB: QUY TRÌNH LẬP HỢP ĐỒNG VÀ NHẬN PHÒNG MỚI
+Note over Staff, DB: QUY TRINH LAP HOP DONG VA NHAN PHONG MOI
 
-Staff -> View : 1. Nhập thông tin khách & Chọn phòng
-View -> Controller : 2. validateAndCheckRoom(roomId)
+Staff -> View : 1. Chon phong trong + nhap thong tin khach/hop dong
+View -> Facade : 2. createContract(roomCode,...,rent,deposit)
+activate Facade
+
+Facade -> Controller : 3. createContract(roomCode,...)
 activate Controller
-
-Controller -> Service : 3. isRoomAvailable(roomId)
+Controller -> Service : 4. addContractFull(roomCode,...)
 activate Service
-Service -> DB : 4. SELECT trang_thai FROM PHONG WHERE id = ?
+Service -> Repository : 5. addContractFull(roomCode,...)
+activate Repository
+Repository -> DataStore : 6. addContractFull(roomCode,...)
+activate DataStore
+
+DataStore -> DB : 7. Tao tenant + contract + update room DA_THUE
 activate DB
-DB -->> Service : 5. Trả về 'TRONG'
+DB -->> DataStore : 8. Luu thanh cong
+DataStore -->> Repository : 9. ContractItem moi
+Repository -->> Service : 10. ContractItem moi
+Service -->> Controller : 11. ContractItem moi
+Controller -->> Facade : 12. Hoan tat tao hop dong
+Facade -->> View : 13. Thong bao tao hop dong thanh cong
+
 deactivate DB
-Service -->> Controller : 6. Room is available
+deactivate DataStore
+deactivate Repository
 deactivate Service
-Controller -->> View : 7. Hiển thị: "Phòng sẵn sàng"
 deactivate Controller
+deactivate Facade
 
-Staff -> View : 8. Nhập tiền cọc, ngày bắt đầu & Tải ảnh hợp đồng
-View -> Controller : 9. createNewContract(customerDTO, contractDTO, vehicleDTO)
-activate Controller
-
-Controller -> Service : 10. processContractCreation(customerDTO, contractDTO, vehicleDTO)
-activate Service
-
-Service -> DB : 11. Begin Transaction
-activate DB
-
-' Lưu thông tin khách thuê trước để lấy ID
-Service -> DB : 12. INSERT INTO KHACH_THUE (ho_ten, so_cccd, so_dien_thoai)
-DB -->> Service : 13. Trả về customer_id
-
-' Lưu hợp đồng sử dụng customer_id vừa lấy
-Service -> DB : 14. INSERT INTO HOP_DONG (customer_id, room_id, tien_coc, ...)
-DB -->> Service : 15. Trả về contract_id
-
-' Lưu thông tin xe nếu khách có đăng ký
-alt Khách có đăng ký gửi xe
-    Service -> DB : 16. INSERT INTO XE (hop_dong_id, loai_xe, bien_so)
-end
-
-' Cập nhật trạng thái phòng sang Đã thuê
-Service -> DB : 17. UPDATE PHONG SET trang_thai = 'DA_THUE' WHERE id = ?
-
-Service -> DB : 18. Commit Transaction
-DB -->> Service : 19. Success
-deactivate DB
-
-Service -->> Controller : 20. Contract created successfully
-deactivate Service
-
-Controller -->> View : 21. Show Success Message & Print Contract
-deactivate Controller
-
-View -->> Staff : 22. Thông báo hoàn tất & Bàn giao chìa khóa
+View -> View : 14. Refresh table contracts() va quay ve Trang chu
+View -->> Staff : 15. Hien message box lap hop dong thanh cong
 @enduml

@@ -1,40 +1,68 @@
 @startuml
 skinparam style strictuml
-skinparam maxMessageSize 150
+skinparam maxMessageSize 180
 
 actor "Admin" as Admin
-participant "InvoiceLookupPanel\n(View)" as View
-participant "InvoiceLookupController" as Controller
-participant "InvoiceLookupService" as Service
+participant "AdminFeaturePanels.invoiceLookupPanel\n(View)" as View
+participant "AdminController\n(Facade)" as Facade
+participant "AdminInvoiceLookupController" as Controller
+participant "AdminService" as Service
+participant "AdminInvoiceRepository" as Repository
+participant "JpaAdminDataStore" as DataStore
 database "MySQL\n(BoardingHouse_DB)" as DB
 
 Note over Admin, DB: INVOICE LOOKUP (ADMIN)
 
-Admin -> View : 1. Open invoice lookup screen
-View -> Controller : 2. searchInvoices(filters)
-activate Controller
-Controller -> Service : 3. findInvoices(filters)
-activate Service
-Service -> DB : 4. SELECT * FROM HOA_DON WHERE filters
-activate DB
-DB -->> Service : 5. invoiceList
-Deactivate DB
-Service -->> Controller : 6. invoiceList
-Deactivate Service
-Controller -->> View : 7. Render invoice list
-Deactivate Controller
+Admin -> View : 1. Nhap bo loc (phong/thang/nam/paid)
+View -> Facade : 2. searchInvoices(roomNumber, month, year, paid)
+activate Facade
 
-Admin -> View : 8. Select invoice details
-View -> Controller : 9. getInvoiceDetail(invoiceId)
+Facade -> Controller : 3. searchInvoices(...)
 activate Controller
-Controller -> Service : 10. getInvoiceDetail(invoiceId)
+Controller -> Service : 4. searchInvoices(...)
 activate Service
-Service -> DB : 11. SELECT * FROM HOA_DON WHERE id = ?
+Service -> Repository : 5. searchInvoices(...)
+activate Repository
+Repository -> DataStore : 6. searchInvoices(...)
+activate DataStore
+DataStore -> DB : 7. SELECT HOA_DON theo filters
 activate DB
-DB -->> Service : 12. invoiceDetail
-Deactivate DB
-Service -->> Controller : 13. invoiceDetail
-Deactivate Service
-Controller -->> View : 14. Show invoice detail
-Deactivate Controller
+DB -->> DataStore : 8. invoiceList
+DataStore -->> Repository : 9. invoiceList
+Repository -->> Service : 10. invoiceList
+Service -->> Controller : 11. invoiceList
+Controller -->> Facade : 12. invoiceList
+Facade -->> View : 13. Render invoice list
+
+deactivate DB
+deactivate DataStore
+deactivate Repository
+deactivate Service
+deactivate Controller
+deactivate Facade
+
+Admin -> View : 14. Bam Tai lai
+View -> Facade : 15. reloadInvoices()
+activate Facade
+Facade -> Controller : 16. reloadInvoices()
+activate Controller
+Controller -> Service : 17. reloadInvoices()
+activate Service
+Service -> Repository : 18. reloadInvoices()
+activate Repository
+Repository -> DataStore : 19. reloadInvoices()
+activate DataStore
+DataStore -> DB : 20. SELECT all HOA_DON
+DB -->> DataStore : 21. invoiceList
+DataStore -->> Repository : 22. invoiceList
+Repository -->> Service : 23. invoiceList
+Service -->> Controller : 24. invoiceList
+Controller -->> Facade : 25. invoiceList
+Facade -->> View : 26. Refresh table
+
+deactivate DataStore
+deactivate Repository
+deactivate Service
+deactivate Controller
+deactivate Facade
 @enduml

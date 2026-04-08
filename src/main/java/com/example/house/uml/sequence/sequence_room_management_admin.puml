@@ -1,62 +1,78 @@
 @startuml
 skinparam style strictuml
-skinparam maxMessageSize 150
+skinparam maxMessageSize 180
 
 actor "Admin" as Admin
-participant "RoomManagementPanel\n(View)" as View
-participant "RoomManagementController" as Controller
-participant "RoomManagementService" as Service
+participant "AdminFeaturePanels.roomManagementPanel\n(View)" as View
+participant "AdminController\n(Facade)" as Facade
+participant "AdminService" as Service
+participant "AdminRoomRepository" as Repository
+participant "JpaAdminDataStore" as DataStore
 database "MySQL\n(BoardingHouse_DB)" as DB
 
 Note over Admin, DB: ROOM/FLOOR MANAGEMENT (ADMIN)
 
-Admin -> View : 1. Open room management screen
-View -> Controller : 2. loadRooms()
-activate Controller
-Controller -> Service : 3. getRooms()
+Admin -> View : 1. Mo man hinh quan ly phong
+View -> Facade : 2. rooms()
+activate Facade
+Facade -> Service : 3. rooms()
 activate Service
-Service -> DB : 4. SELECT * FROM PHONG ORDER BY tang, so_phong
+Service -> Repository : 4. rooms()
+activate Repository
+Repository -> DataStore : 5. rooms()
+activate DataStore
+DataStore -> DB : 6. SELECT PHONG ORDER BY floor, roomNumber
 activate DB
-DB -->> Service : 5. roomList
-Deactivate DB
-Service -->> Controller : 6. roomList
-Deactivate Service
-Controller -->> View : 7. Render room list
-Deactivate Controller
+DB -->> DataStore : 7. roomList
+DataStore -->> Repository : 8. roomList
+Repository -->> Service : 9. roomList
+Service -->> Facade : 10. roomList
+Facade -->> View : 11. Render room list
+deactivate DB
+deactivate DataStore
+deactivate Repository
+deactivate Service
+deactivate Facade
 
-Admin -> View : 8. Choose action (Add/Edit/Delete)
-View -> Controller : 9. submitRoomAction(action, roomDTO)
-activate Controller
-Controller -> Service : 10. processRoomAction(action, roomDTO)
+Admin -> View : 12. Them/Sua thong tin phong
+View -> Facade : 13. saveRoom(roomItem)
+activate Facade
+Facade -> Service : 14. saveRoom(roomItem)
 activate Service
+Service -> Repository : 15. saveRoom(roomItem)
+activate Repository
+Repository -> DataStore : 16. saveRoom(roomItem)
+activate DataStore
+DataStore -> DB : 17. INSERT/UPDATE PHONG
+DB -->> DataStore : 18. Success
+DataStore -->> Repository : 19. RoomItem da cap nhat
+Repository -->> Service : 20. RoomItem da cap nhat
+Service -->> Facade : 21. RoomItem da cap nhat
+Facade -->> View : 22. Refresh list + show message
+deactivate DataStore
+deactivate Repository
+deactivate Service
+deactivate Facade
 
-alt Add room
-    Service -> Service : 11. Validate unique so_phong and gia_thue_co_ban >= 0
-    alt Invalid input
-        Service -->> Controller : 12. Validation error
-    else Valid
-        Service -> DB : 13. INSERT INTO PHONG
-        Service -->> Controller : 14. Add success
-    end
-else Edit room
-    Service -> Service : 15. Validate room exists and input constraints
-    alt Invalid input
-        Service -->> Controller : 16. Validation error
-    else Valid
-        Service -> DB : 17. UPDATE PHONG
-        Service -->> Controller : 18. Update success
-    end
-else Delete room
-    Service -> DB : 19. SELECT trang_thai FROM PHONG WHERE id = ?
-    alt Room not TRONG
-        Service -->> Controller : 20. Reject delete (room occupied or maintenance)
-    else Room TRONG
-        Service -> DB : 21. DELETE FROM PHONG WHERE id = ?
-        Service -->> Controller : 22. Delete success
-    end
+alt Xoa phong
+    Admin -> View : 23. Chon phong can xoa
+    View -> Facade : 24. deleteRoom(roomId)
+    activate Facade
+    Facade -> Service : 25. deleteRoom(roomId)
+    activate Service
+    Service -> Repository : 26. deleteRoom(roomId)
+    activate Repository
+    Repository -> DataStore : 27. deleteRoom(roomId)
+    activate DataStore
+    DataStore -> DB : 28. DELETE PHONG (chi khi TRONG)
+    DB -->> DataStore : 29. Success/Validation error
+    DataStore -->> Repository : 30. Ket qua
+    Repository -->> Service : 31. Ket qua
+    Service -->> Facade : 32. Ket qua
+    Facade -->> View : 33. Show message
+    deactivate DataStore
+    deactivate Repository
+    deactivate Service
+    deactivate Facade
 end
-
-Deactivate Service
-Controller -->> View : 23. Refresh list and show message
-Deactivate Controller
 @enduml

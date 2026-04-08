@@ -1,38 +1,46 @@
 @startuml
 skinparam style strictuml
+skinparam maxMessageSize 190
 
 actor "Admin" as Admin
-participant "ReportPanel\n(View)" as View
-participant "ReportController" as Controller
-participant "ReportService" as Service
+participant "AdminFeaturePanels.revenueStatsPanel\n(View)" as View
+participant "AdminController\n(Facade)" as Facade
+participant "RevenueStatsController" as Controller
+participant "AdminService" as Service
+participant "AdminRevenueRepository" as Repository
+participant "JpaAdminDataStore" as DataStore
 database "MySQL\n(BoardingHouse_DB)" as DB
 
-Note over Admin, DB: QUY TRÌNH TỔNG HỢP DOANH THU
+Note over Admin, DB: QUY TRINH TONG HOP DOANH THU
 
-Admin -> View : 1. Chọn thời gian thống kê
-View -> Controller : 2. getRevenueReport(startDate, endDate)
+Admin -> View : 1. Chon ky thong ke (MONTH/QUARTER/YEAR), nam, gia tri ky
+View -> Facade : 2. refreshRevenue(period, year, periodValue)
+activate Facade
+
+Facade -> Controller : 3. refreshRevenue(period, year, periodValue)
 activate Controller
-
-Controller -> Service : 3. calculateTotalRevenue(startDate, endDate)
+Controller -> Service : 4. refreshRevenue(period, year, periodValue)
 activate Service
+Service -> Repository : 5. refreshRevenue(period, year, periodValue)
+activate Repository
+Repository -> DataStore : 6. refreshRevenue(period, year, periodValue)
+activate DataStore
 
-Service -> DB : 4. SELECT SUM(tong_tien) FROM HOA_DON WHERE da_thanh_toan = TRUE
+DataStore -> DB : 7. Truy van tong doanh thu HOA_DON da thu
 activate DB
-DB -->> Service : 5. Doanh thu từ hóa đơn
+DB -->> DataStore : 8. invoice totals
+DataStore -> DB : 9. Truy van tong BOI_THUONG da thu
+DB -->> DataStore : 10. compensation totals
+DataStore -->> Repository : 11. revenueRows da tong hop
+Repository -->> Service : 12. revenueRows da tong hop
+Service -->> Controller : 13. revenueRows da tong hop
+Controller -->> Facade : 14. Da cap nhat du lieu
+Facade -->> View : 15. Render chart/table + tong doanh thu
+
 deactivate DB
-
-Service -> DB : 6. SELECT SUM(so_tien) FROM BOI_THUONG WHERE da_thu = TRUE
-activate DB
-DB -->> Service : 7. Doanh thu từ bồi thường
-deactivate DB
-
-Service -> Service : 8. Tổng hợp dữ liệu & Phân loại theo hinh_thuc
-
-Service -->> Controller : 9. Report Data (JSON/Object)
+deactivate DataStore
+deactivate Repository
 deactivate Service
-
-Controller -->> View : 10. Render chart & tables
 deactivate Controller
-
-View -->> Admin : 11. Hiển thị biểu đồ doanh thu
+deactivate Facade
 @enduml

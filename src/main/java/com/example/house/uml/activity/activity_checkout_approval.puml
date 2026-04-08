@@ -1,52 +1,34 @@
 @startuml
 skinparam style strictuml
-' Tinh chỉnh màu sắc cho chuyên nghiệp
-skinparam activity {
-  BackgroundColor White
-  BorderColor Black
-  ArrowColor Black
-}
 
-|Nhân viên|
+|Admin|
 start
-:Tiếp nhận yêu cầu trả phòng;
-:Kiểm tra tài sản thực tế;
+:Mở danh sách hợp đồng cần trả phòng;
+:Chọn hợp đồng cần quyết toán;
 
-if (Có hư hỏng?) then (Có)
-    :Nhập lý do & số tiền bồi thường;
-    |Hệ thống|
-    :Lưu vào bảng **BOI_THUONG** (da_thu = FALSE);
+|Hệ thống|
+:Tính tiền cọc, hóa đơn nợ, bồi thường;
+:Hiển thị số tiền hoàn trả;
+
+|Admin|
+if (Có phát sinh bồi thường?) then (Có)
+  :Nhập lý do và số tiền bồi thường;
+  |Hệ thống|
+  :Lưu bồi thường vào hệ thống;
 else (Không)
 endif
 
-|Nhân viên|
-:Yêu cầu quyết toán phòng;
+|Admin|
+:Chọn trạng thái phòng sau trả;
+:Chọn hình thức thu bồi thường;
+:Nhấn "Xác nhận trả phòng";
 
 |Hệ thống|
-:Truy vấn Tiền cọc, Hóa đơn nợ & Bồi thường;
-:Tính toán: **Tiền trả khách = Cọc - (Nợ + Bồi thường)**;
-:Hiển thị bảng tổng kết quyết toán;
+:Cập nhật hợp đồng thành "KẾT_THÚC";
+:Cập nhật trạng thái phòng;
+:Đánh dấu bồi thường đã thu;
+:Xóa thông tin xe theo hợp đồng;
+:Hiển thị thông báo thành công;
 
-|Nhân viên|
-:Thỏa thuận con số cuối cùng với khách;
-:Chọn hình thức thanh toán (Tiền mặt/Chuyển khoản);
-
-if (Hình thức là Chuyển khoản?) then (Có)
-    :Yêu cầu khách quét QR Admin;
-    :Nhập **mã giao dịch** đối soát;
-else (Tiền mặt/Trừ cọc)
-    :Xác nhận thu/chi tiền mặt;
-endif
-
-:Bấm "Xác nhận trả phòng & Dọn dẹp";
-
-|Hệ thống|
-:Cập nhật **HOP_DONG** ('KET_THUC');
-:Cập nhật **PHONG** ('TRONG');
-:Xóa dữ liệu trong bảng **XE**;
-:Cập nhật **da_thu = TRUE** (Bồi thường);
-
-|Nhân viên|
-:Thu lại chìa khóa & kết thúc;
 stop
 @enduml

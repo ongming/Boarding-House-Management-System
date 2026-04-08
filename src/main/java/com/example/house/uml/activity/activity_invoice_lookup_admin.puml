@@ -1,0 +1,20 @@
+@startuml
+skinparam style strictuml
+
+|Admin|
+start
+:Nhập bộ lọc hóa đơn (phòng/tháng/năm/trạng thái);
+:Nhấn "Tra cứu";
+
+|Hệ thống|
+:Truy vấn danh sách hóa đơn theo điều kiện;
+:Hiển thị kết quả trên bảng;
+
+if (Admin muốn tải lại toàn bộ?) then (Có)
+  :Tải lại toàn bộ hóa đơn;
+  :Hiển thị danh sách mới nhất;
+else (Không)
+endif
+
+stop
+@enduml

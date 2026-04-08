@@ -80,6 +80,7 @@ public class StaffFeaturePanels {
         TextField tenantCccd = new TextField();
         TextField tenantPhone = new TextField();
         DatePicker startDate = new DatePicker(LocalDate.now());
+        DatePicker moveInDate = new DatePicker(LocalDate.now());
         DatePicker endDate = new DatePicker();
         TextField occupantCount = new TextField("1");
         TextField rent = new TextField();
@@ -98,12 +99,14 @@ public class StaffFeaturePanels {
         styleField(tenantCccd);
         styleField(tenantPhone);
         styleField(startDate);
+        styleField(moveInDate);
         styleField(endDate);
         styleField(occupantCount);
         styleField(rent);
         styleField(deposit);
         styleField(contractImagePath);
         startDate.setMaxWidth(Double.MAX_VALUE);
+        moveInDate.setMaxWidth(Double.MAX_VALUE);
         endDate.setMaxWidth(Double.MAX_VALUE);
 
         contractImagePath.setEditable(false);
@@ -128,6 +131,7 @@ public class StaffFeaturePanels {
         tenantCccd.setPromptText("Nhập số CCCD/CMND");
         tenantPhone.setPromptText("Nhập số điện thoại");
         startDate.setPromptText("Chọn ngày bắt đầu");
+        moveInDate.setPromptText("Chọn ngày dọn vào");
         endDate.setPromptText("Chọn ngày kết thúc (nếu có)");
         occupantCount.setPromptText("Ví dụ: 2");
         rent.setPromptText("Ví dụ: 3.000.000");
@@ -138,6 +142,7 @@ public class StaffFeaturePanels {
             tenantCccd.clear();
             tenantPhone.clear();
             startDate.setValue(LocalDate.now());
+            moveInDate.setValue(LocalDate.now());
             endDate.setValue(null);
             occupantCount.setText("1");
             if (baseRentText.isBlank()) {
@@ -150,8 +155,10 @@ public class StaffFeaturePanels {
         };
 
         Button save = new Button("Lưu hợp đồng");
+        Button updateMoveIn = new Button("Cập nhật ngày dọn vào");
         Button reset = new Button("Làm mới");
         stylePrimaryButton(save);
+        styleSecondaryButton(updateMoveIn);
         styleSecondaryButton(reset);
 
         TableView<StaffDataStore.ContractItem> table = new TableView<>(controller.contracts());
@@ -160,6 +167,7 @@ public class StaffFeaturePanels {
                 column("Phòng", StaffDataStore.ContractItem::roomCode, 90),
                 column("Khách thuê", StaffDataStore.ContractItem::tenantName, 160),
                 column("Ngày bắt đầu", item -> formatDate(item.startDate()), 110),
+                column("Ngày dọn vào", item -> formatDate(item.moveInDate()), 110),
                 column("Ngày kết thúc", item -> formatDate(item.endDate()), 110),
                 column("Tiền phòng", item -> formatMoney(item.rentFee()), 120),
                 column("Tiền cọc", item -> formatMoney(item.deposit()), 120),
@@ -169,6 +177,15 @@ public class StaffFeaturePanels {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         table.setStyle(tableStyle());
 
+        table.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, selected) -> {
+            if (selected == null) {
+                return;
+            }
+            startDate.setValue(selected.startDate());
+            moveInDate.setValue(selected.moveInDate() != null ? selected.moveInDate() : selected.startDate());
+            endDate.setValue(selected.endDate());
+        });
+
         save.setOnAction(event -> runSafe(msg, () -> {
             controller.createContract(
                     room.getText(),
@@ -176,6 +193,7 @@ public class StaffFeaturePanels {
                     tenantCccd.getText(),
                     tenantPhone.getText(),
                     startDate.getValue(),
+                    moveInDate.getValue(),
                     endDate.getValue(),
                     contractImagePath.getText(),
                     occupantCount.getText(),
@@ -195,6 +213,15 @@ public class StaffFeaturePanels {
             }
         }));
 
+        updateMoveIn.setOnAction(event -> runSafe(msg, () -> {
+            StaffDataStore.ContractItem selected = requireSelection(table, "Chọn hợp đồng cần cập nhật");
+            LocalDate moveIn = requiredDate(moveInDate.getValue(), "Ngày dọn vào");
+            controller.updateContractMoveInDate(selected.id(), moveIn);
+            table.setItems(controller.contracts());
+            table.refresh();
+            msg.setText("Đã cập nhật ngày dọn vào");
+        }));
+
         reset.setOnAction(event -> {
             clearForm.run();
             msg.setText("Đã làm mới biểu mẫu");
@@ -212,6 +239,7 @@ public class StaffFeaturePanels {
         VBox contractCard = fieldCard("2. Thông tin hợp đồng",
                 "Phòng", room,
                 "Ngày bắt đầu", startDate,
+                "Ngày dọn vào", moveInDate,
                 "Ngày kết thúc", endDate,
                 "Ảnh hợp đồng", imageRow,
                 "Số người ở", occupantCount,
@@ -226,7 +254,7 @@ public class StaffFeaturePanels {
         HBox cards = new HBox(16, customerCard, contractCard);
         cards.setFillHeight(true);
 
-        HBox actions = new HBox(10, save, reset, msg);
+        HBox actions = new HBox(10, save, updateMoveIn, reset, msg);
         actions.setPadding(new Insets(4, 0, 0, 0));
         HBox.setHgrow(msg, Priority.ALWAYS);
 
@@ -868,6 +896,14 @@ public class StaffFeaturePanels {
         return value;
     }
 
+    private static <T> T requireSelection(TableView<T> table, String message) {
+        T selected = table.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            throw new IllegalArgumentException(message);
+        }
+        return selected;
+    }
+
     private static String formatMoney(double value) {
         return String.format("%,.0f", value);
     }
@@ -883,3 +919,4 @@ public class StaffFeaturePanels {
         return baseRent.stripTrailingZeros().toPlainString();
     }
 }
+

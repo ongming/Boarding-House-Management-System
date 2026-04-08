@@ -1,51 +1,66 @@
 @startuml
 skinparam style strictuml
-skinparam maxMessageSize 150
+skinparam maxMessageSize 180
 
 actor "Admin" as Admin
-participant "PricingConfigPanel\n(View)" as View
-participant "PricingConfigController" as Controller
-participant "PricingConfigService" as Service
+participant "AdminFeaturePanels.rateConfigPanel\n(View)" as View
+participant "AdminController\n(Facade)" as Facade
+participant "RateConfigController" as Controller
+participant "AdminService" as Service
+participant "AdminRateConfigRepository" as Repository
+participant "JpaAdminDataStore" as DataStore
 database "MySQL\n(BoardingHouse_DB)" as DB
 
 Note over Admin, DB: PRICE CONFIGURATION (ADMIN)
 
-Admin -> View : 1. Open price config screen
-View -> Controller : 2. loadCurrentRates()
+Admin -> View : 1. Mo man hinh don gia
+View -> Facade : 2. rateConfigs()
+activate Facade
+Facade -> Controller : 3. rateConfigs()
 activate Controller
-Controller -> Service : 3. getCurrentRates()
+Controller -> Service : 4. rateConfigs()
 activate Service
-Service -> DB : 4. SELECT * FROM CAU_HINH_GIA
+Service -> Repository : 5. rateConfigs()
+activate Repository
+Repository -> DataStore : 6. rateConfigs()
+activate DataStore
+DataStore -> DB : 7. SELECT CAU_HINH_GIA
 activate DB
-DB -->> Service : 5. rateList
-Deactivate DB
-Service -->> Controller : 6. rateList
-Deactivate Service
-Controller -->> View : 7. Render current rates
-Deactivate Controller
+DB -->> DataStore : 8. rateList
+DataStore -->> Repository : 9. rateList
+Repository -->> Service : 10. rateList
+Service -->> Controller : 11. rateList
+Controller -->> Facade : 12. rateList
+Facade -->> View : 13. Render current rates
+deactivate DB
+deactivate DataStore
+deactivate Repository
+deactivate Service
+deactivate Controller
+deactivate Facade
 
-Admin -> View : 8. Edit rates and click Save
-View -> Controller : 9. updateRates(rateList)
+Admin -> View : 14. Sua tung muc va bam Luu
+View -> Facade : 15. saveRate(type, unitPrice)
+activate Facade
+Facade -> Controller : 16. saveRate(type, unitPrice)
 activate Controller
-Controller -> Service : 10. validateAndSaveRates(rateList)
+Controller -> Service : 17. saveRate(type, unitPrice)
 activate Service
+Service -> Repository : 18. saveRate(type, unitPrice)
+activate Repository
+Repository -> DataStore : 19. saveRate(type, unitPrice)
+activate DataStore
+DataStore -> DB : 20. INSERT/UPDATE CAU_HINH_GIA
+DB -->> DataStore : 21. Success
+DataStore -->> Repository : 22. RateItem da cap nhat
+Repository -->> Service : 23. RateItem da cap nhat
+Service -->> Controller : 24. RateItem da cap nhat
+Controller -->> Facade : 25. Save success
+Facade -->> View : 26. Show result message
 
-Service -> Service : 11. Validate rate >= 0 and type in {DIEN, NUOC, RAC, XE}
-alt Invalid input
-    Service -->> Controller : 12. Validation error
-else Valid input
-    Service -> DB : 13. Begin Transaction
-    activate DB
-    loop Each rate
-        Service -> DB : 14. INSERT or UPDATE CAU_HINH_GIA
-    end
-    Service -> DB : 15. Commit
-    DB -->> Service : 16. Success
-    deactivate DB
-    Service -->> Controller : 17. Save success
-end
-
-Deactivate Service
-Controller -->> View : 18. Show result message
-Deactivate Controller
+deactivate DataStore
+deactivate Repository
+deactivate Service
+deactivate Controller
+deactivate Facade
 @enduml

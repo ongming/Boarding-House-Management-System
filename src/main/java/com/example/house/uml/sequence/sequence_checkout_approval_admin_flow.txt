@@ -1,0 +1,13 @@
+Mô tả luồng tuần tự:
+
+Actor: Admin.
+
+Presentation Layer: Giao diện `AdminFeaturePanels.checkoutApprovalPanel` cho phép Admin mở danh sách yêu cầu trả phòng, chọn hợp đồng để xem tổng kết công nợ, sau đó xác nhận duyệt checkout với trạng thái phòng và phương thức thanh toán. View lần lượt gọi `AdminController.pendingCheckouts()`, `AdminController.buildCheckoutSummary(contractId)` và `AdminController.approveCheckout(contractId, roomStatus, paymentMethod)`.
+
+Controller Layer (`AdminController` -> `CheckoutApprovalController`): Nhiệm vụ: Nhận thao tác từ giao diện, điều phối đúng luồng nghiệp vụ duyệt trả phòng (tải danh sách chờ duyệt, lấy dữ liệu tổng kết, xác nhận checkout), và trả kết quả về View để hiển thị thông tin và thông báo trạng thái.
+
+Service Layer (`AdminService`): Nhiệm vụ: Xử lý logic nghiệp vụ trung tâm của checkout approval. Service lấy danh sách hợp đồng đang hoạt động để lọc các ca chờ trả phòng, tính tổng kết thanh toán (hóa đơn chưa thu + bồi thường + tiền cọc), và khi duyệt thì xử lý nghiệp vụ cập nhật trạng thái hợp đồng/phòng theo tham số đầu vào.
+
+Repository / Transaction Layer (`AdminCheckoutRepository` -> `JpaAdminDataStore`): Nhiệm vụ: Thực thi các truy vấn và cập nhật trên MySQL, gồm đọc danh sách checkout chờ duyệt, tổng hợp dữ liệu quyết toán, và ghi nhận duyệt checkout (cập nhật contract/room, thu bồi thường nếu có, xử lý dữ liệu xe liên quan). Các bước ghi dữ liệu chạy trong transaction; nếu lỗi giữa chừng sẽ rollback để tránh lệch trạng thái trả phòng.
+
+Kết quả trả về giao diện: View hiển thị thông tin tổng kết cho Admin trước khi duyệt; khi duyệt thành công, hệ thống hiển thị thông báo xác nhận và làm mới danh sách checkout chờ duyệt ngay trên màn hình.

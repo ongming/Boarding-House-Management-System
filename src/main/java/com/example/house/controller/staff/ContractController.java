@@ -23,12 +23,14 @@ public class ContractController {
                                String tenantCccd,
                                String tenantPhone,
                                LocalDate startDate,
+                               LocalDate moveInDate,
                                LocalDate endDate,
                                String contractImageUrl,
                                String occupantCount,
                                String rent,
                                String deposit) {
         LocalDate start = ControllerInputParser.requireDate(startDate, "Ngay bat dau");
+        LocalDate moveIn = moveInDate != null ? moveInDate : start;
         if (endDate != null && endDate.isBefore(start)) {
             throw new IllegalArgumentException("Ngay ket thuc phai lon hon hoac bang ngay bat dau");
         }
@@ -39,11 +41,16 @@ public class ContractController {
                 ControllerInputParser.required(tenantCccd, "CCCD"),
                 ControllerInputParser.required(tenantPhone, "So dien thoai"),
                 start,
+                moveIn,
                 endDate,
                 ControllerInputParser.nullable(contractImageUrl),
                 ControllerInputParser.parseInt(occupantCount, "So nguoi o"),
                 ControllerInputParser.parseDouble(rent, "Tien phong"),
                 ControllerInputParser.parseDouble(deposit, "Tien coc")
         );
+    }
+
+    public void updateContractMoveInDate(int contractId, LocalDate moveInDate) {
+        service.updateContractMoveInDate(contractId, ControllerInputParser.requireDate(moveInDate, "Ngay don vao"));
     }
 }

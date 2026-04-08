@@ -1,0 +1,35 @@
+@startuml
+skinparam style strictuml
+
+|Admin|
+start
+:Mở màn hình quản lý tầng/phòng;
+
+|Hệ thống|
+:Tải danh sách phòng hiện có;
+
+|Admin|
+:Chọn thao tác (Thêm/Sửa/Xóa);
+
+if (Thao tác?) then (Thêm hoặc Sửa)
+  :Nhập thông tin phòng;
+  |Hệ thống|
+  :Kiểm tra dữ liệu hợp lệ;
+  :Lưu thông tin phòng;
+  :Hiển thị thông báo thành công;
+else (Xóa)
+  :Chọn phòng cần xóa;
+  |Hệ thống|
+  :Kiểm tra phòng đang trống;
+  if (Phòng đang trống?) then (Có)
+    :Xóa phòng;
+    :Hiển thị thông báo thành công;
+  else (Không)
+    :Hiển thị lỗi không thể xóa;
+  endif
+endif
+
+|Hệ thống|
+:Tải lại danh sách phòng;
+stop
+@enduml

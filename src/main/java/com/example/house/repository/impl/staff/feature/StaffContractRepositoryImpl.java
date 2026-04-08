@@ -29,12 +29,18 @@ public class StaffContractRepositoryImpl implements StaffContractRepository {
                                                        String tenantCccd,
                                                        String tenantPhone,
                                                        LocalDate startDate,
+                                                       LocalDate moveInDate,
                                                        LocalDate endDate,
                                                        String contractImageUrl,
                                                        int occupantCount,
                                                        double rentFee,
                                                        double deposit) {
         return dataStore.addContractFull(roomCode, tenantName, tenantCccd, tenantPhone,
-                startDate, endDate, contractImageUrl, occupantCount, rentFee, deposit);
+                startDate, moveInDate, endDate, contractImageUrl, occupantCount, rentFee, deposit);
+    }
+
+    @Override
+    public StaffDataStore.ContractItem updateContractMoveInDate(int contractId, LocalDate moveInDate) {
+        return dataStore.updateContractMoveInDate(contractId, moveInDate);
     }
 }

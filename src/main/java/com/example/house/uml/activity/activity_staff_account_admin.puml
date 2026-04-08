@@ -1,0 +1,24 @@
+@startuml
+skinparam style strictuml
+
+|Admin|
+start
+:Nhập tên đăng nhập, mật khẩu, họ tên và ca làm;
+:Nhấn "Tạo tài khoản";
+
+|Hệ thống|
+:Kiểm tra trùng tên đăng nhập;
+
+if (Tên đăng nhập đã tồn tại?) then (Có)
+  :Hiển thị lỗi trùng tài khoản;
+  stop
+else (Không)
+endif
+
+:Tạo tài khoản loại NHÂN_VIÊN;
+:Tạo hồ sơ nhân viên gắn với tài khoản;
+:Hiển thị thông báo tạo thành công;
+:Tải lại danh sách nhân viên;
+
+stop
+@enduml

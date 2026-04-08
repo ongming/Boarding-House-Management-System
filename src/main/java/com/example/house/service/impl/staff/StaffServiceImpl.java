@@ -52,10 +52,14 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override public StaffDataStore.ContractItem addContractFull(String roomCode, String tenantName, String tenantCccd, String tenantPhone,
-                                                                  LocalDate startDate, LocalDate endDate, String contractImageUrl,
-                                                                  int occupantCount, double rentFee, double deposit) {
+                                                                  LocalDate startDate, LocalDate moveInDate, LocalDate endDate,
+                                                                  String contractImageUrl, int occupantCount, double rentFee, double deposit) {
         return contractRepository.addContractFull(roomCode, tenantName, tenantCccd, tenantPhone,
-                startDate, endDate, contractImageUrl, occupantCount, rentFee, deposit);
+                startDate, moveInDate, endDate, contractImageUrl, occupantCount, rentFee, deposit);
+    }
+
+    @Override public StaffDataStore.ContractItem updateContractMoveInDate(int contractId, LocalDate moveInDate) {
+        return contractRepository.updateContractMoveInDate(contractId, moveInDate);
     }
 
     @Override public StaffDataStore.VehicleItem addVehicle(String roomCode, String vehicleType, String plateNumber, double monthlyFee) {

@@ -12,18 +12,21 @@ public interface StaffDataStore {
         private final double rentFee;
         private final double deposit;
         private final LocalDate startDate;
+        private final LocalDate moveInDate;
         private final LocalDate endDate;
         private final String contractImageUrl;
         private final LocalDateTime createdAt;
 
         public ContractItem(int id, String roomCode, String tenantName, double rentFee, double deposit,
-                            LocalDate startDate, LocalDate endDate, String contractImageUrl, LocalDateTime createdAt) {
+                            LocalDate startDate, LocalDate moveInDate, LocalDate endDate,
+                            String contractImageUrl, LocalDateTime createdAt) {
             this.id = id;
             this.roomCode = roomCode;
             this.tenantName = tenantName;
             this.rentFee = rentFee;
             this.deposit = deposit;
             this.startDate = startDate;
+            this.moveInDate = moveInDate;
             this.endDate = endDate;
             this.contractImageUrl = contractImageUrl;
             this.createdAt = createdAt;
@@ -35,6 +38,7 @@ public interface StaffDataStore {
         public double rentFee() { return rentFee; }
         public double deposit() { return deposit; }
         public LocalDate startDate() { return startDate; }
+        public LocalDate moveInDate() { return moveInDate; }
         public LocalDate endDate() { return endDate; }
         public String contractImageUrl() { return contractImageUrl; }
         public LocalDateTime createdAt() { return createdAt; }

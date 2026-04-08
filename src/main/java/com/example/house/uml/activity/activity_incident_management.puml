@@ -3,33 +3,26 @@ skinparam style strictuml
 
 |Nhân viên|
 start
-:Tiếp nhận phản ánh từ khách thuê;
-:Mở chức năng "Ghi nhận sự cố";
-:Chọn phòng và nhập nội dung chi tiết;
+:Tiếp nhận phản ánh từ khách;
+:Nhập phòng và nội dung sự cố;
 
 |Hệ thống|
-:Tự động lấy **nhan_vien_id** từ phiên đăng nhập;
-:Tạo bản ghi mới vào bảng **PHAN_HOI**;
-:(Trạng thái: 'CHO_XU_LY');
+:Tạo bản ghi phản hồi trạng thái "CHỜ_XỬ_LÝ";
 
 |Admin|
-:Xem danh sách sự cố 'CHO_XU_LY';
-:Đánh giá và chỉ đạo phân công thợ;
-:Cập nhật trạng thái thành 'DANG_SUA';
+:Xem danh sách phản hồi chờ xử lý;
+:Đánh giá mức độ và chỉ đạo xử lý;
+:Chuyển trạng thái "ĐANG_SỬA";
 
 |Hệ thống|
-:Lưu thay đổi vào DB;
-:Gửi thông báo cập nhật cho Nhân viên;
+:Lưu trạng thái mới;
 
-|Nhân viên|
-:Phối hợp sửa chữa thực tế;
-:Xác nhận hoàn tất trên phần mềm;
+|Admin|
+:Xác nhận hoàn tất xử lý;
 
 |Hệ thống|
-:Cập nhật trạng thái thành 'HOAN_THANH';
-:Lưu thời gian hoàn thành;
+:Cập nhật trạng thái "HOÀN_THÀNH";
+:Hiển thị trạng thái đã cập nhật;
 
-|Nhân viên|
-:Thông báo cho khách thuê;
 stop
 @enduml

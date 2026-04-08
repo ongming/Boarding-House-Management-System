@@ -112,6 +112,11 @@ public class StaffDomainServiceImpl implements StaffDomainService {
     }
 
     @Override
+    public Contract updateContractMoveInDate(Integer contractId, java.time.LocalDate moveInDate) {
+        return contractHandler.updateContractMoveInDate(contractId, moveInDate);
+    }
+
+    @Override
     public UtilityReading saveUtilityReading(String roomNumber, YearMonth period, int oldElectric, int newElectric,
                                              int oldWater, int newWater) {
         return contractHandler.saveUtilityReading(roomNumber, period, oldElectric, newElectric, oldWater, newWater);

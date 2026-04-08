@@ -1,35 +1,40 @@
 @startuml
 skinparam style strictuml
-skinparam maxMessageSize 150
+skinparam maxMessageSize 180
 
-actor "Người dùng" as User
-participant "LoginFrame\n(View)" as View
-participant "AuthController" as Controller
+actor "Nguoi dung" as User
+participant "LoginView\n(View)" as View
+participant "LoginController" as Controller
 participant "AuthService" as Service
+participant "AccountRepository" as Repository
 database "MySQL\n(BoardingHouse_DB)" as DB
 
-Note over User, DB: QUY TRÌNH ĐĂNG NHẬP VÀ PHÂN QUYỀN
+Note over User, DB: QUY TRINH DANG NHAP VA PHAN QUYEN
 
-User -> View : 1. Nhập username & password
+User -> View : 1. Nhap username/password va bam Dang nhap
 View -> Controller : 2. login(username, password)
 activate Controller
 
 Controller -> Service : 3. authenticate(username, password)
 activate Service
 
-Service -> DB : 4. Find TAI_KHOAN by username
+Service -> Repository : 4. findByUsername(username)
+activate Repository
+Repository -> DB : 5. SELECT tai_khoan theo username
 activate DB
-DB -->> Service : 5. Account Object
+DB -->> Repository : 6. Account row
+Repository -->> Service : 7. Optional<Account>
 deactivate DB
+deactivate Repository
 
-Service -> Service : 6. Check Password (BCrypt/MD5)
+Service -> Service : 8. Kiem tra mat khau hien tai (so sanh truc tiep)
 
-alt Thông tin hợp lệ
-    Service -->> Controller : 7. Auth Success (Role: ADMIN/NHAN_VIEN)
-    Controller -->> View : 8. Chuyển hướng theo loai_tai_khoan
-else Thông tin sai
-    Service -->> Controller : 9. Auth Failed
-    Controller -->> View : 10. Hiển thị lỗi: "Sai tài khoản/mật khẩu"
+alt Hop le
+    Service -->> Controller : 9. Account (ADMIN/NHAN_VIEN)
+    Controller -->> View : 10. Mo dashboard theo role
+else Khong hop le
+    Service -->> Controller : 11. IllegalArgumentException
+    Controller -->> View : 12. Hien thi thong bao loi
 end
 
 deactivate Service

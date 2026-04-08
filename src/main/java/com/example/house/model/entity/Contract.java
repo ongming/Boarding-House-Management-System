@@ -33,6 +33,9 @@ public class Contract {
     @Column(name = "ngay_bat_dau", nullable = false)
     private LocalDate startDate;
 
+    @Column(name = "ngay_don_vao")
+    private LocalDate moveInDate;
+
     @Column(name = "ngay_ket_thuc")
     private LocalDate endDate;
 
@@ -77,6 +80,14 @@ public class Contract {
         this.startDate = startDate;
     }
 
+    public LocalDate getMoveInDate() {
+        return moveInDate;
+    }
+
+    public void setMoveInDate(LocalDate moveInDate) {
+        this.moveInDate = moveInDate;
+    }
+
     public LocalDate getEndDate() {
         return endDate;
     }
@@ -117,4 +128,3 @@ public class Contract {
         this.status = status;
     }
 }
-

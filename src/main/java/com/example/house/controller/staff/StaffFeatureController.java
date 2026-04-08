@@ -42,6 +42,7 @@ public class StaffFeatureController {
                                String tenantCccd,
                                String tenantPhone,
                                LocalDate startDate,
+                               LocalDate moveInDate,
                                LocalDate endDate,
                                String contractImageUrl,
                                String occupantCount,
@@ -53,12 +54,17 @@ public class StaffFeatureController {
                 tenantCccd,
                 tenantPhone,
                 startDate,
+                moveInDate,
                 endDate,
                 contractImageUrl,
                 occupantCount,
                 rent,
                 deposit
         );
+    }
+
+    public void updateContractMoveInDate(int contractId, LocalDate moveInDate) {
+        contractController.updateContractMoveInDate(contractId, moveInDate);
     }
 
     public void addVehicle(String roomCode, String vehicleType, String plateNumber, String monthlyFee) {

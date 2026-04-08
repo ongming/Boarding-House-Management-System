@@ -1,0 +1,138 @@
+TONG KET CAP NHAT CHUC NANG NGAY_DON_VAO (HOP_DONG)
+
+1) Muc tieu cap nhat
+- Ho tro truong ngay_don_vao trong luong lap hop dong.
+- Ho tro cap nhat ngay_don_vao cho hop dong da tao ngay tren giao dien Staff.
+- Dong bo du lieu theo dung luong 5 tang: View -> Controller -> Service -> Repository -> Database.
+
+2) Cac thay doi da thuc hien (theo file)
+
+2.1 Entity + DTO
+- src/main/java/com/example/house/model/entity/Contract.java
+  + Them thuoc tinh moveInDate.
+  + Mapping @Column(name = "ngay_don_vao").
+  + Them getter/setter: getMoveInDate(), setMoveInDate().
+
+- src/main/java/com/example/house/model/dto/staff/ContractCreationRequest.java
+  + Them field moveInDate.
+  + Cap nhat constructor nhan moveInDate.
+  + Them accessor moveInDate().
+
+- src/main/java/com/example/house/model/dto/staff/StaffDataStore.java
+  + ContractItem bo sung field moveInDate.
+  + Cap nhat constructor ContractItem va them moveInDate().
+
+2.2 Service domain (nghiep vu)
+- src/main/java/com/example/house/service/staff/ContractService.java
+  + Them ham: Contract updateContractMoveInDate(Integer contractId, LocalDate moveInDate).
+
+- src/main/java/com/example/house/service/impl/staff/support/ContractHandler.java
+  + Khi tao hop dong: setMoveInDate(request.moveInDate() != null ? request.moveInDate() : request.startDate()).
+  + Them ham updateContractMoveInDate(contractId, moveInDate) de cap nhat ngay_don_vao.
+
+- src/main/java/com/example/house/service/impl/staff/StaffDomainServiceImpl.java
+  + Implement updateContractMoveInDate(...) va uy quyen cho ContractHandler.
+
+2.3 Service app + Repository feature
+- src/main/java/com/example/house/service/staff/StaffDataStore.java
+  + addContractFull(...) bo sung tham so moveInDate.
+  + Them ham updateContractMoveInDate(int contractId, LocalDate moveInDate).
+
+- src/main/java/com/example/house/repository/staff/feature/StaffContractRepository.java
+  + addContractFull(...) bo sung moveInDate.
+  + Them updateContractMoveInDate(...).
+
+- src/main/java/com/example/house/repository/impl/staff/feature/StaffContractRepositoryImpl.java
+  + Dong bo implementation cho 2 thay doi tren.
+
+- src/main/java/com/example/house/service/staff/StaffService.java
+  + addContractFull(...) bo sung moveInDate.
+  + Them updateContractMoveInDate(...).
+
+- src/main/java/com/example/house/service/impl/staff/StaffServiceImpl.java
+  + Dong bo implementation addContractFull(...) + updateContractMoveInDate(...).
+
+2.4 DataStore JPA
+- src/main/java/com/example/house/repository/impl/JpaStaffDataStore.java
+  + addContractFull(...) bo sung moveInDate va truyen vao ContractCreationRequest.
+  + addContract(...) dat moveInDate mac dinh LocalDate.now().
+  + Them updateContractMoveInDate(...) goi workflowService.updateContractMoveInDate(...).
+  + toContractItem(...) map them moveInDate.
+
+2.5 Controller + View
+- src/main/java/com/example/house/controller/staff/ContractController.java
+  + createContract(...) bo sung tham so moveInDate.
+  + Them updateContractMoveInDate(int contractId, LocalDate moveInDate).
+
+- src/main/java/com/example/house/controller/staff/StaffFeatureController.java
+  + Dong bo createContract(...) co moveInDate.
+  + Expose updateContractMoveInDate(...) cho View.
+
+- src/main/java/com/example/house/view/staff/StaffFeaturePanels.java
+  + Contract form bo sung DatePicker "Ngay don vao".
+  + Bang danh sach hop dong bo sung cot "Ngay don vao".
+  + Nut moi: "Cap nhat ngay don vao" cho hop dong dang chon.
+  + Khi bam Luu hop dong: truyen moveInDate xuong controller.
+
+3) Luong du lieu moi (ngay_don_vao)
+- Nhap tren View: DatePicker moveInDate.
+- View goi StaffFeatureController.createContract(..., moveInDate, ...).
+- StaffFeatureController -> ContractController -> StaffService -> StaffContractRepository -> JpaStaffDataStore.
+- JpaStaffDataStore tao ContractCreationRequest(moveInDate) -> StaffDomainService -> ContractHandler.
+- ContractHandler set contract.moveInDate -> contractRepository.save(contract).
+- JPA map vao cot HOP_DONG.ngay_don_vao.
+
+4) Luong cap nhat ngay_don_vao tren hop dong da co
+- Chon 1 dong hop dong trong table.
+- Chon ngay moi o DatePicker "Ngay don vao".
+- Bam "Cap nhat ngay don vao".
+- View -> StaffFeatureController.updateContractMoveInDate -> ContractController -> Service -> Repository -> JpaStaffDataStore.
+- ContractHandler tim theo contractId, set moveInDate moi, save vao DB.
+- View refresh table ngay lap tuc.
+
+5) Quy chuan dat ten ham, dat lenh, cau truc file (de team lam tiep)
+
+5.1 Quy chuan dat ten ham
+- Controller facade: ten mang y nghia use-case (createContract, updateContractMoveInDate).
+- Service: dong tu + doi tuong nghiep vu (addContractFull, updateContractMoveInDate).
+- Repository feature: giong Service de mapping 1-1, de trace loi nhanh.
+- Mapper/toItem: dat ten to<Entity>Item (toContractItem, toInvoiceItem).
+
+5.2 Quy chuan dat lenh trong ham
+- Thu tu uu tien:
+  1) Validate input.
+  2) Load du lieu lien quan.
+  3) Apply business rule.
+  4) Save/Update DB.
+  5) Refresh UI list neu la DataStore/View.
+- Khong chen logic nghiep vu phuc tap trong View.
+- View chi goi facade controller, khong goi thang repository.
+
+5.3 Quy chuan cau truc file
+- view/*: chi code giao dien + event handler.
+- controller/*: parse input + dieu phoi use-case.
+- service/*: business rule.
+- repository/*: khai bao thao tac du lieu theo feature.
+- repository/impl/*: JPA/SQL implementation.
+- model/entity: entity map DB.
+- model/dto: DTO hien thi/truyen du lieu.
+
+6) Mau them 1 truong moi trong tuong lai (template)
+- Buoc 1: Them cot DB + cap nhat entity.
+- Buoc 2: Them field vao request DTO + item DTO.
+- Buoc 3: Sua service/domain handler de xu ly logic.
+- Buoc 4: Sua repository interface + impl + datastore.
+- Buoc 5: Sua controller + view.
+- Buoc 6: Refresh list va test create/update.
+
+7) Luu y DB
+- Database.txt da co cot HOP_DONG.ngay_don_vao.
+- Neu DB dang chay chua co cot nay, can migrate:
+  ALTER TABLE HOP_DONG ADD COLUMN ngay_don_vao DATE;
+
+8) Ket qua sau cap nhat
+- Da co the nhap ngay_don_vao luc lap hop dong.
+- Da co the cap nhat ngay_don_vao cho hop dong da ton tai.
+- UI table hop dong hien thi truc tiep ngay_don_vao.
+- Luong xu ly van giu dung architecture 5 tang.
+

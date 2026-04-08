@@ -1,40 +1,67 @@
 @startuml
 skinparam style strictuml
-skinparam maxMessageSize 150
+skinparam maxMessageSize 190
 
 actor "Admin" as Admin
-participant "FeedbackManagementPanel\n(View)" as View
+participant "AdminFeaturePanels.feedbackManagementPanel\n(View)" as View
+participant "AdminController\n(Facade)" as Facade
 participant "FeedbackManagementController" as Controller
-participant "FeedbackManagementService" as Service
+participant "AdminService" as Service
+participant "AdminFeedbackRepository" as Repository
+participant "JpaAdminDataStore" as DataStore
 database "MySQL\n(BoardingHouse_DB)" as DB
 
 Note over Admin, DB: INCIDENT DIRECTION (ADMIN)
 
-Admin -> View : 1. Open incident management screen
-View -> Controller : 2. loadPendingIncidents()
+Admin -> View : 1. Mo man hinh quan ly phan hoi
+View -> Facade : 2. getFeedbacksByStatus(status)
+activate Facade
+Facade -> Controller : 3. getFeedbacksByStatus(status)
 activate Controller
-Controller -> Service : 3. getIncidentsByStatus('CHO_XU_LY')
+Controller -> Service : 4. getFeedbacksByStatus(status)
 activate Service
-Service -> DB : 4. SELECT * FROM PHAN_HOI WHERE trang_thai = 'CHO_XU_LY'
+Service -> Repository : 5. getFeedbacksByStatus(status)
+activate Repository
+Repository -> DataStore : 6. getFeedbacksByStatus(status)
+activate DataStore
+DataStore -> DB : 7. SELECT PHAN_HOI theo trang_thai
 activate DB
-DB -->> Service : 5. incidentList
-Deactivate DB
-Service -->> Controller : 6. incidentList
-Deactivate Service
-Controller -->> View : 7. Render incident list
-Deactivate Controller
+DB -->> DataStore : 8. incidentList
+DataStore -->> Repository : 9. incidentList
+Repository -->> Service : 10. incidentList
+Service -->> Controller : 11. incidentList
+Controller -->> Facade : 12. incidentList
+Facade -->> View : 13. Render incident list
 
-Admin -> View : 8. Assign staff and update status
-View -> Controller : 9. updateIncidentStatus(incidentId, 'DANG_SUA')
+deactivate DB
+deactivate DataStore
+deactivate Repository
+deactivate Service
+deactivate Controller
+deactivate Facade
+
+Admin -> View : 14. Cap nhat trang thai (DANG_SUA/HOAN_THANH)
+View -> Facade : 15. updateFeedbackStatus(incidentId, status)
+activate Facade
+Facade -> Controller : 16. updateFeedbackStatus(incidentId, status)
 activate Controller
-Controller -> Service : 10. updateIncidentStatus(incidentId, status)
+Controller -> Service : 17. updateFeedbackStatus(incidentId, status)
 activate Service
-Service -> DB : 11. UPDATE PHAN_HOI SET trang_thai = ? WHERE id = ?
-activate DB
-DB -->> Service : 12. Success
-Deactivate DB
-Service -->> Controller : 13. Update success
-Deactivate Service
-Controller -->> View : 14. Refresh list and show message
-Deactivate Controller
+Service -> Repository : 18. updateFeedbackStatus(incidentId, status)
+activate Repository
+Repository -> DataStore : 19. updateFeedbackStatus(incidentId, status)
+activate DataStore
+DataStore -> DB : 20. UPDATE PHAN_HOI SET trang_thai = ?
+DB -->> DataStore : 21. Success
+DataStore -->> Repository : 22. FeedbackItem da cap nhat
+Repository -->> Service : 23. FeedbackItem da cap nhat
+Service -->> Controller : 24. FeedbackItem da cap nhat
+Controller -->> Facade : 25. Update success
+Facade -->> View : 26. Refresh list + show message
+
+deactivate DataStore
+deactivate Repository
+deactivate Service
+deactivate Controller
+deactivate Facade
 @enduml

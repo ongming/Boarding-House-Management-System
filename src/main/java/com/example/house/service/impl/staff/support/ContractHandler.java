@@ -67,6 +67,7 @@ public class ContractHandler {
         contract.setRoom(room);
         contract.setTenant(tenant);
         contract.setStartDate(request.startDate());
+        contract.setMoveInDate(request.moveInDate() != null ? request.moveInDate() : request.startDate());
         contract.setEndDate(request.endDate());
         contract.setContractImageUrl(blankToNull(request.contractImageUrl()));
         contract.setDeposit(defaultBigDecimal(request.deposit()));
@@ -128,6 +129,13 @@ public class ContractHandler {
         vehicle.setVehicleType(vehicleType);
         vehicle.setLicensePlate(plateNumber);
         return vehicleRepository.save(vehicle);
+    }
+
+    public Contract updateContractMoveInDate(Integer contractId, java.time.LocalDate moveInDate) {
+        Contract contract = contractRepository.findById(contractId)
+                .orElseThrow(() -> new IllegalArgumentException("Contract not found"));
+        contract.setMoveInDate(moveInDate);
+        return contractRepository.save(contract);
     }
 
     private BigDecimal defaultBigDecimal(BigDecimal value) {

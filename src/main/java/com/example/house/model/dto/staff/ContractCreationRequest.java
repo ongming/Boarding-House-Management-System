@@ -11,6 +11,7 @@ public class ContractCreationRequest {
     private final BigDecimal deposit;
     private final BigDecimal roomFee;
     private final LocalDate startDate;
+    private final LocalDate moveInDate;
     private final LocalDate endDate;
     private final String contractImageUrl;
     private final Integer occupantCount;
@@ -24,6 +25,7 @@ public class ContractCreationRequest {
                                    BigDecimal deposit,
                                    BigDecimal roomFee,
                                    LocalDate startDate,
+                                   LocalDate moveInDate,
                                    LocalDate endDate,
                                    String contractImageUrl,
                                    Integer occupantCount,
@@ -36,6 +38,7 @@ public class ContractCreationRequest {
         this.deposit = deposit;
         this.roomFee = roomFee;
         this.startDate = startDate;
+        this.moveInDate = moveInDate;
         this.endDate = endDate;
         this.contractImageUrl = contractImageUrl;
         this.occupantCount = occupantCount;
@@ -50,6 +53,7 @@ public class ContractCreationRequest {
     public BigDecimal deposit() { return deposit; }
     public BigDecimal roomFee() { return roomFee; }
     public LocalDate startDate() { return startDate; }
+    public LocalDate moveInDate() { return moveInDate; }
     public LocalDate endDate() { return endDate; }
     public String contractImageUrl() { return contractImageUrl; }
     public Integer occupantCount() { return occupantCount; }

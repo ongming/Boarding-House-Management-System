@@ -1,37 +1,47 @@
 @startuml
 skinparam style strictuml
-skinparam maxMessageSize 150
+skinparam maxMessageSize 180
 
-actor "Nhân viên" as Staff
-participant "PaymentPanel\n(View)" as View
-participant "BillingController" as Controller
-participant "BillingService" as Service
+actor "Nhan vien" as Staff
+participant "StaffFeaturePanels.paymentPanel\n(View)" as View
+participant "StaffFeatureController\n(Facade)" as Facade
+participant "PaymentController" as Controller
+participant "StaffService" as Service
+participant "StaffBillingRepository" as Repository
+participant "JpaStaffDataStore" as DataStore
 database "MySQL\n(BoardingHouse_DB)" as DB
 
-Note over Staff, DB: QUY TRÌNH THU TIỀN HÓA ĐƠN (TIỀN MẶT / CHUYỂN KHOẢN)
+Note over Staff, DB: QUY TRINH THU TIEN HOA DON (TIEN MAT / CHUYEN KHOAN)
 
-Staff -> View : 1. Chọn hóa đơn cần thu
-View -> Controller : 2. confirmPayment(billId, paymentType)
+Staff -> View : 1. Chon hoa don chua thu va phuong thuc thanh toan
+View -> Facade : 2. markInvoicePaid(invoice, paymentMethod)
+activate Facade
+
+Facade -> Controller : 3. markInvoicePaid(invoice, paymentMethod)
 activate Controller
-
-Controller -> Service : 3. processPayment(billId, paymentType)
+Controller -> Service : 4. markInvoicePaid(invoiceId, paymentMethod)
 activate Service
+Service -> Repository : 5. markInvoicePaid(invoiceId, paymentMethod)
+activate Repository
+Repository -> DataStore : 6. markInvoicePaid(invoiceId, paymentMethod)
+activate DataStore
 
-Service -> DB : 4. Begin Transaction
+DataStore -> DB : 7. UPDATE HOA_DON set paid=true, method, paidAt
 activate DB
+DB -->> DataStore : 8. Success
+DataStore -->> Repository : 9. InvoiceItem da cap nhat
+Repository -->> Service : 10. InvoiceItem da cap nhat
+Service -->> Controller : 11. InvoiceItem da cap nhat
+Controller -->> Facade : 12. Thanh toan thanh cong
+Facade -->> View : 13. Hien thong bao thanh cong
 
-' Cập nhật hóa đơn
-Service -> DB : 5. UPDATE HOA_DON SET da_thanh_toan = TRUE,\nhinh_thuc_thanh_toan = ?, ngay_thanh_toan = NOW()
-DB -->> Service : 6. Success
-
-Service -> DB : 7. Commit
 deactivate DB
-
-Service -->> Controller : 8. Payment Processed
+deactivate DataStore
+deactivate Repository
 deactivate Service
-
-Controller -->> View : 9. Hiển thị thông báo thành công
 deactivate Controller
+deactivate Facade
 
-View -->> Staff : 10. In biên lai cho khách
+View -> View : 14. Refresh danh sach hoa don chua thu
+View -->> Staff : 15. San sang in bien lai
 @enduml

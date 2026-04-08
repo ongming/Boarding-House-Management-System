@@ -1,49 +1,188 @@
-1. NHÓM CHỨC NĂNG CỦA ADMIN (CHỦ TRỌ)
-A. Quản lý Hệ thống & Cấu hình (System Config)
+1. TONG QUAN HE THONG
 
-    Thiết lập đơn giá: Nhập và cập nhật giá Điện, Nước, Xe, Rác vào hệ thống.
+Ten de tai: Boarding House Management System
+Muc tieu: So hoa quy trinh quan ly nha tro theo mo hinh nhieu vai tro (Admin, Staff),
+bao gom quan ly phong, hop dong, chi phi, hoa don, thanh toan, phan hoi su co.
 
-    Quản lý Sơ đồ nhà trọ: * Thêm/Sửa/Xóa Tầng.
+2. NHOM CHUC NANG CUA ADMIN (CHU TRO)
 
-    Thêm/Sửa/Xóa Phòng (định nghĩa số phòng, loại máy lạnh, giá gốc, nội thất).
+A. Quan ly he thong va cau hinh
 
-    Quản lý Nhân sự: * Cấp tài khoản cho nhân viên mới.
+2.1. Thiet lap don gia dich vu
+- Quan ly don gia dien, nuoc, xe, rac.
+- Cho phep cap nhat gia moi, luu vao CSDL.
+- Duoc dung boi module tinh hoa don hang thang.
 
-    Xếp ca AI: Nhấn nút để AI tự động chia lịch trực dựa trên dữ liệu phòng trọ.
+2.2. Quan ly tang/phong
+- Them, sua, xoa thong tin phong.
+- Thuoc tinh phong: so phong, tang, dien tich, gia thue co ban, noi that, trang thai.
+- Trang thai phong: trong, da thue, bao tri.
 
-B. Giám sát & Phê duyệt (Monitoring & Approval)
+2.3. Quan ly tai khoan nhan vien
+- Tao tai khoan staff (username, mat khau, ho ten, ca lam).
+- Phuc vu dang nhap va phan quyen.
 
-    Thống kê doanh thu: Xem biểu đồ tổng tiền thu được theo tháng/quý/năm.
+B. Giam sat va phe duyet
 
-    Phê duyệt trả phòng: Kiểm tra báo cáo hoàn phòng từ nhân viên, nhập tiền đền bù hỏng hóc và xác nhận trả cọc.
+2.4. Thong ke doanh thu
+- Xem doanh thu theo ky: thang/quy/nam.
+- Tong hop tu hoa don va khoan boi thuong.
 
-    Quản lý Phản hồi: Xem danh sách sự cố khách báo, cập nhật chỉ đạo xử lý cho nhân viên.
+2.5. Phe duyet tra phong
+- Xem danh sach hop dong dang cho tra phong.
+- Xem tong tien coc, tien no, tien boi thuong.
+- Them boi thuong neu co hu hong.
+- Xac nhan trang thai phong va hinh thuc thu boi thuong.
 
-    Tra cứu hóa đơn: Xem lại bất kỳ hóa đơn nào của bất kỳ phòng nào trong quá khứ.
+2.6. Quan ly phan hoi/su co
+- Xem danh sach phan hoi tu staff/khach thue.
+- Loc theo trang thai (cho xu ly, dang sua, hoan thanh).
+- Cap nhat trang thai xu ly.
 
-2. NHÓM CHỨC NĂNG CỦA NHÂN VIÊN (STAFF)
-A. Quản lý Khách thuê & Hợp đồng (Tenant Management)
+2.7. Tra cuu hoa don
+- Tim kiem hoa don theo phong, thang, nam, trang thai thanh toan.
+- Tai lai danh sach hoa don de doi soat.
 
-    Đăng ký khách mới: Nhập thông tin cá nhân khách (Họ tên, CCCD, SĐT).
+3. NHOM CHUC NANG CUA NHAN VIEN (STAFF)
 
-    Lập hợp đồng số: Upload ảnh chụp hợp đồng giấy và ảnh CCCD khách lên hệ thống.
+A. Quan ly khach thue va hop dong
 
-    Quản lý Xe: Nhập số lượng xe, loại xe và biển số xe của từng phòng.
+3.1. Lap hop dong moi
+- Chon phong trong tu man hinh Trang chu.
+- Nhap thong tin khach thue: ho ten, CCCD, SDT.
+- Nhap thong tin hop dong: ngay bat dau/ket thuc, so nguoi o, tien phong, tien coc.
+- Upload anh hop dong (neu co).
+- Tu dong cap nhat trang thai phong sau khi tao hop dong thanh cong.
 
-    Cập nhật người ở: Thay đổi số lượng người ở thực tế trong phòng khi có biến động.
+3.2. Quan ly xe theo phong
+- Them thong tin xe (loai xe, bien so, phi hang thang).
+- Luu va hien thi danh sach xe.
 
-B. Vận hành & Thu phí hàng tháng (Operations)
+3.3. Cap nhat so nguoi o
+- Cap nhat bien dong nguoi o theo phong.
+- Luu lich su cap nhat.
 
-    Chốt chỉ số điện nước: Đi từng phòng nhập số điện mới, số nước mới vào cuối tháng.
+B. Van hanh va thu phi hang thang
 
-    Tính toán hóa đơn: Hệ thống tự động tổng hợp (Tiền phòng + Điện + Nước + Xe + Rác).
+3.4. Chot chi so dien nuoc
+- Nhap chi so cu/moi theo phong va theo thang.
+- Luu du lieu doc so de tinh hoa don.
 
-    Xuất/Xem hóa đơn: Hiển thị chi tiết hóa đơn để giải thích cho khách thuê.
+3.5. Tinh hoa don
+- Tu dong tinh hoa don dua tren:
+  + Gia phong.
+  + So dien, nuoc tieu thu.
+  + Phi xe, phi rac.
+- Tao hoa don hang loat theo thang.
 
-    Xác nhận thanh toán: Đánh dấu "Đã thu tiền" khi khách đóng tiền mặt hoặc chuyển khoản.
+3.6. Xem va tra cuu hoa don
+- Xem danh sach hoa don cua cac phong.
+- Loc theo ma phong de tim nhanh.
 
-C. Tương tác & Cá nhân (Interaction)
+3.7. Xac nhan thanh toan
+- Danh dau hoa don da thu.
+- Ho tro hinh thuc thu: tien mat/chuyen khoan.
 
-    Ghi nhận sự cố: Nhập các phản hồi, hỏng hóc từ khách hàng để báo cáo lên Admin.
+C. Tuong tac van hanh
 
-    Theo dõi ca trực: Xem lịch làm việc cá nhân đã được hệ thống sắp xếp.
+3.8. Ghi nhan su co/phan hoi
+- Staff ghi nhan phan hoi hu hong tu khach.
+- Gui len admin de chi dao xu ly.
+
+4. CAC CHUC NANG DUNG CHUNG
+
+4.1. Dang nhap va phan quyen
+- Dang nhap theo role Admin/Staff.
+- Dieu huong den dashboard tuong ung.
+
+4.2. Dashboard theo vai tro
+- Admin dashboard: quan tri cau hinh, phe duyet, thong ke.
+- Staff dashboard: thao tac nghiep vu van hanh hang ngay.
+
+5. QUY TRINH NGHIEP VU CHINH
+
+5.1. Quy trinh lap hop dong
+- Staff chon phong trong -> mo form hop dong -> nhap thong tin -> luu.
+- He thong tao tenant + contract, cap nhat phong sang da thue.
+- Giao dien cap nhat ngay danh sach, thong bao thanh cong.
+
+5.2. Quy trinh tinh va thu tien
+- Staff chot chi so -> he thong tinh hoa don thang -> staff thu tien -> danh dau da thanh toan.
+- Admin co the tra cuu va doi soat hoa don/doanh thu.
+
+5.3. Quy trinh tra phong
+- Staff ghi nhan thong tin tra phong -> Admin phe duyet.
+- Admin nhap boi thuong (neu co), xac nhan tra coc va trang thai phong.
+
+6. CAU TRUC FILE (KIEN TRUC DU AN)
+
+Mo hinh kien truc:
+View -> Controller -> Service -> Repository -> Database
+
+6.1. Cau truc package chinh
+- com.example.house.config
+  + JpaUtil.java
+  + ViewComposition.java
+
+- com.example.house.controller
+  + auth/
+  + admin/
+  + staff/
+  + staff/home/
+  + shared/
+
+- com.example.house.service
+  + admin/
+  + staff/
+  + impl/admin/
+  + impl/staff/
+
+- com.example.house.repository
+  + admin/feature/*Repository.java
+  + staff/feature/*Repository.java
+  + impl/admin/feature/*RepositoryImpl.java
+  + impl/staff/feature/*RepositoryImpl.java
+  + impl/Jpa* (entity-level repositories)
+
+- com.example.house.model
+  + entity/
+  + dto/
+  + enums/
+
+- com.example.house.view
+  + auth/
+  + admin/
+  + staff/
+  + main/
+
+7. CONG NGHE SU DUNG
+
+7.1. Ngon ngu va nen tang
+- Java (JDK 21+)
+- Maven (quan ly dependency, build)
+
+7.2. Giao dien
+- JavaFX (controls, scene, dashboard, panels)
+
+7.3. Persistence va ORM
+- Jakarta Persistence (JPA)
+- Hibernate ORM
+
+7.4. Co so du lieu
+- MySQL
+- JDBC driver: mysql-connector-j
+
+7.5. Cau hinh CSDL
+- persistence.xml (persistence-unit boarding-house-pu)
+- Ho tro override qua bien moi truong:
+  + DB_URL
+  + DB_USER
+  + DB_PASSWORD
+  + DB_DRIVER
+
+8. GHI CHU BAO CAO
+
+- Tai lieu nay la ban tong hop chuc nang va cong nghe theo cau truc code hien tai.
+- Co the tach ra cac muc phu trong bao cao: Use case, Sequence, Class diagram, Testing.
+- Neu can mo rong them (vi du xep ca AI, theo doi lich truc nang cao), de xuat tao module rieng
+  tai service/controller/repository theo dung mau tren.

@@ -3,34 +3,16 @@ skinparam style strictuml
 
 |Admin|
 start
-:Mở tính năng "Báo cáo doanh thu";
-:Chọn khoảng thời gian cần thống kê\n(Tháng/Quý/Năm);
+:Mở tính năng thống kê doanh thu;
+:Chọn kỳ (Tháng/Quý/Năm) và năm;
 
 |Hệ thống|
-:Truy vấn bảng **HOA_DON** theo thời gian;
-:Truy vấn bảng **BOI_THUONG** đã thu tiền;
-
-fork
-  :Tính tổng doanh thu dự kiến (Tất cả hóa đơn);
-fork again
-  :Tính tổng doanh thu thực tế (da_thanh_toan = TRUE);
-fork again
-  :Phân loại doanh thu theo **hinh_thuc_thanh_toan**;
-end fork
-
-:Tính toán chi phí điện, nước dựa trên chỉ số;
-:Tổng hợp dữ liệu và vẽ biểu đồ (Cột/Tròn);
+:Tổng hợp doanh thu từ hóa đơn đã thu;
+:Tổng hợp doanh thu từ bồi thường đã thu;
+:Gộp dữ liệu theo kỳ thống kê;
+:Hiển thị bảng doanh thu và tổng cộng;
 
 |Admin|
-:Xem báo cáo chi tiết trên màn hình;
-if (Cần lưu trữ?) then (Có)
-  :Chọn "Xuất báo cáo (Excel/PDF)";
-  |Hệ thống|
-  :Khởi tạo file và tải xuống;
-else (Không)
-endif
-
-|Admin|
-:Dựa vào dữ liệu để đưa ra quyết định quản lý;
+:Xem và phân tích báo cáo;
 stop
 @enduml

@@ -394,7 +394,14 @@ public class AdminFeaturePanels {
     }
 
     public Node invoiceLookupPanel() {
-        TextField roomNumber = new TextField();
+        ComboBox<String> roomNumber = new ComboBox<>();
+        ObservableList<String> roomOptions = FXCollections.observableArrayList();
+        refreshRoomNumberOptions(roomOptions);
+        roomNumber.setItems(roomOptions);
+        roomNumber.getSelectionModel().selectFirst();
+        ListChangeListener<AdminDataStore.RoomItem> roomListener = change -> refreshRoomNumberOptions(roomOptions);
+        controller.rooms().addListener(roomListener);
+
         TextField month = new TextField();
         TextField year = new TextField();
 
@@ -412,7 +419,8 @@ public class AdminFeaturePanels {
                 case "Chưa thanh toán" -> Boolean.FALSE;
                 default -> null;
             };
-            controller.searchInvoices(roomNumber.getText(), monthValue, yearValue, paidValue);
+            String roomFilter = "Tất cả".equals(roomNumber.getValue()) ? null : roomNumber.getValue();
+            controller.searchInvoices(roomFilter, monthValue, yearValue, paidValue);
             msg.setText("Đã cập nhật danh sách");
         }));
 
@@ -635,6 +643,16 @@ public class AdminFeaturePanels {
                 .distinct()
                 .sorted()
                 .toList());
+    }
+
+    private void refreshRoomNumberOptions(ObservableList<String> roomOptions) {
+        roomOptions.setAll(controller.rooms().stream()
+                .map(AdminDataStore.RoomItem::roomNumber)
+                .filter(room -> room != null && !room.isBlank())
+                .distinct()
+                .sorted()
+                .toList());
+        roomOptions.add(0, "Tất cả");
     }
 }
 

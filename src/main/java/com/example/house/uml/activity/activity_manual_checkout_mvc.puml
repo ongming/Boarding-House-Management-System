@@ -1,0 +1,34 @@
+@startuml
+skinparam style strictuml
+
+|Nhân viên|
+start
+:Chọn phòng tại Trang chủ;
+:Nhấn "Lập hợp đồng";
+:Nhập thông tin khách thuê;
+:Nhập thông tin hợp đồng;
+
+|Hệ thống|
+:Kiểm tra phòng còn trống;
+
+if (Phòng khả dụng?) then (Không)
+  :Thông báo "Phòng hiện không thể cho thuê";
+  stop
+else (Có)
+endif
+
+|Nhân viên|
+:Kiểm tra lại thông tin;
+:Nhấn "Lưu hợp đồng";
+
+|Hệ thống|
+:Tạo bản ghi KHÁCH_THUÊ;
+:Tạo bản ghi HỢP_ĐỒNG;
+:Cập nhật PHÒNG thành "ĐÃ_THUÊ";
+:Cập nhật danh sách hợp đồng ngay trên giao diện;
+:Hiển thị thông báo "Lập hợp đồng thành công";
+
+|Nhân viên|
+:Quay về Trang chủ;
+stop
+@enduml

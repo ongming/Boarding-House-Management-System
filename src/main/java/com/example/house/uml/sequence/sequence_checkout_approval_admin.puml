@@ -1,68 +1,95 @@
 @startuml
 skinparam style strictuml
-skinparam maxMessageSize 150
+skinparam maxMessageSize 200
 
 actor "Admin" as Admin
-participant "CheckoutApprovalPanel\n(View)" as View
+participant "AdminFeaturePanels.checkoutApprovalPanel\n(View)" as View
+participant "AdminController\n(Facade)" as Facade
 participant "CheckoutApprovalController" as Controller
-participant "CheckoutApprovalService" as Service
+participant "AdminService" as Service
+participant "AdminCheckoutRepository" as Repository
+participant "JpaAdminDataStore" as DataStore
 database "MySQL\n(BoardingHouse_DB)" as DB
 
 Note over Admin, DB: CHECKOUT APPROVAL (ADMIN)
 
 Admin -> View : 1. Open checkout approval list
-View -> Controller : 2. loadPendingCheckouts()
+View -> Facade : 2. pendingCheckouts()
+activate Facade
+Facade -> Controller : 3. pendingCheckouts()
 activate Controller
-Controller -> Service : 3. getPendingCheckouts()
+Controller -> Service : 4. pendingCheckouts()
 activate Service
-Service -> DB : 4. SELECT * FROM HOP_DONG WHERE trang_thai = 'HIEU_LUC'
+Service -> Repository : 5. pendingCheckouts()
+activate Repository
+Repository -> DataStore : 6. pendingCheckouts()
+activate DataStore
+DataStore -> DB : 7. SELECT active contracts
 activate DB
-DB -->> Service : 5. contractList
-Deactivate DB
-Service -->> Controller : 6. contractList
-Deactivate Service
-Controller -->> View : 7. Render pending list
-Deactivate Controller
+DB -->> DataStore : 8. checkoutList
+DataStore -->> Repository : 9. checkoutList
+Repository -->> Service : 10. checkoutList
+Service -->> Controller : 11. checkoutList
+Controller -->> Facade : 12. checkoutList
+Facade -->> View : 13. Render pending list
+deactivate DB
+deactivate DataStore
+deactivate Repository
+deactivate Service
+deactivate Controller
+deactivate Facade
 
-Admin -> View : 8. Select contract for summary
-View -> Controller : 9. getCheckoutSummary(contractId)
+Admin -> View : 14. Chon hop dong de xem tong ket
+View -> Facade : 15. buildCheckoutSummary(contractId)
+activate Facade
+Facade -> Controller : 16. buildCheckoutSummary(contractId)
 activate Controller
-Controller -> Service : 10. buildCheckoutSummary(contractId)
+Controller -> Service : 17. buildCheckoutSummary(contractId)
 activate Service
-Service -> DB : 11. SELECT tien_coc FROM HOP_DONG WHERE id = ?
+Service -> Repository : 18. buildCheckoutSummary(contractId)
+activate Repository
+Repository -> DataStore : 19. buildCheckoutSummary(contractId)
+activate DataStore
+DataStore -> DB : 20. SUM unpaid invoice + compensation + deposit
 activate DB
-DB -->> Service : 12. tien_coc
-Deactivate DB
-Service -> DB : 13. SELECT SUM(tong_tien) FROM HOA_DON WHERE hop_dong_id = ? AND da_thanh_toan = FALSE
-activate DB
-DB -->> Service : 14. tong_no
-Deactivate DB
-Service -> DB : 15. SELECT SUM(so_tien) FROM BOI_THUONG WHERE hop_dong_id = ? AND da_thu = FALSE
-activate DB
-DB -->> Service : 16. tong_boi_thuong
-Deactivate DB
-Service -> Service : 17. tien_tra = tien_coc - (tong_no + tong_boi_thuong)
-Service -->> Controller : 18. summaryData
-Deactivate Service
-Controller -->> View : 19. Show summary
-Deactivate Controller
+DB -->> DataStore : 21. summaryData
+DataStore -->> Repository : 22. summaryData
+Repository -->> Service : 23. summaryData
+Service -->> Controller : 24. summaryData
+Controller -->> Facade : 25. summaryData
+Facade -->> View : 26. Show summary
 
-Admin -> View : 20. Approve checkout (paymentMethod, roomStatus)
-View -> Controller : 21. approveCheckout(contractId, paymentMethod, roomStatus)
+deactivate DB
+deactivate DataStore
+deactivate Repository
+deactivate Service
+deactivate Controller
+deactivate Facade
+
+Admin -> View : 27. Approve checkout(roomStatus, paymentMethod)
+View -> Facade : 28. approveCheckout(contractId, roomStatus, paymentMethod)
+activate Facade
+Facade -> Controller : 29. approveCheckout(...)
 activate Controller
-Controller -> Service : 22. finalizeCheckout(contractId, paymentMethod, roomStatus)
+Controller -> Service : 30. approveCheckout(...)
 activate Service
-Service -> DB : 23. Begin Transaction
+Service -> Repository : 31. approveCheckout(...)
+activate Repository
+Repository -> DataStore : 32. approveCheckout(...)
+activate DataStore
+DataStore -> DB : 33. UPDATE contract/room + collect compensation + delete vehicle
 activate DB
-Service -> DB : 24. UPDATE HOP_DONG SET trang_thai = 'KET_THUC'
-Service -> DB : 25. UPDATE PHONG SET trang_thai = roomStatus
-Service -> DB : 26. DELETE FROM XE WHERE hop_dong_id = ?
-Service -> DB : 27. UPDATE BOI_THUONG SET da_thu = TRUE, hinh_thuc_thanh_toan = ?
-Service -> DB : 28. Commit
-DB -->> Service : 29. Success
-Deactivate DB
-Service -->> Controller : 30. Approval success
-Deactivate Service
-Controller -->> View : 31. Show confirmation
-Deactivate Controller
+DB -->> DataStore : 34. Success
+DataStore -->> Repository : 35. Success
+Repository -->> Service : 36. Success
+Service -->> Controller : 37. Success
+Controller -->> Facade : 38. Success
+Facade -->> View : 39. Show confirmation + refresh list
+
+deactivate DB
+deactivate DataStore
+deactivate Repository
+deactivate Service
+deactivate Controller
+deactivate Facade
 @enduml

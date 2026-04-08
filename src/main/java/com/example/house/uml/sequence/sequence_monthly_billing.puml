@@ -1,57 +1,47 @@
 @startuml
 skinparam style strictuml
-skinparam maxMessageSize 150
+skinparam maxMessageSize 190
 
-actor "Nhân viên" as Staff
-participant "BillingPanel\n(View)" as View
+actor "Nhan vien" as Staff
+participant "StaffFeaturePanels.billingPanel\n(View)" as View
+participant "StaffFeatureController\n(Facade)" as Facade
 participant "BillingController" as Controller
-participant "BillingService" as Service
+participant "StaffService" as Service
+participant "StaffBillingRepository" as Repository
+participant "JpaStaffDataStore" as DataStore
 database "MySQL\n(BoardingHouse_DB)" as DB
 
-Note over Staff, DB: QUY TRÌNH TÍNH TOÁN HÓA ĐƠN ĐỒNG LOẠT HÀNG THÁNG
+Note over Staff, DB: QUY TRINH TINH TOAN HOA DON DONG LOAT HANG THANG
 
-Staff -> View : 1. Chọn Tháng/Năm & Nhấn "Tính toán"
-View -> Controller : 2. generateMonthlyBills(month, year)
+Staff -> View : 1. Chon thang + bam 'Tinh hoa don'
+View -> Facade : 2. generateInvoices(month, electricRate, waterRate, garbageFee)
+activate Facade
+
+Facade -> Controller : 3. generateInvoices(month,...)
 activate Controller
-
-Controller -> Service : 3. processAutoBilling(month, year)
+Controller -> Service : 4. generateInvoices(YearMonth,...)
 activate Service
+Service -> Repository : 5. generateInvoices(period,...)
+activate Repository
+Repository -> DataStore : 6. generateInvoices(period,...)
+activate DataStore
 
-Service -> DB : 4. Lấy danh sách hợp đồng (trang_thai = 'HIEU_LUC')
+DataStore -> DB : 7. processAutoBilling(period) va insert HOA_DON
 activate DB
-DB -->> Service : 5. List<HopDong>
+DB -->> DataStore : 8. Danh sach hoa don moi
+DataStore -->> Repository : 9. So hoa don da tao
+Repository -->> Service : 10. So hoa don da tao
+Service -->> Controller : 11. So hoa don da tao
+Controller -->> Facade : 12. So hoa don da tao
+Facade -->> View : 13. Hien thi ket qua tao hoa don
+
 deactivate DB
-
-loop Cho mỗi Hợp đồng (HopDong) trong danh sách
-    Service -> DB : 6. Find CHI_SO_DIEN_NUOC (month, year, roomId)
-    activate DB
-    DB -->> Service : 7. Indicators (Số cũ, Số mới)
-    deactivate DB
-
-    Service -> DB : 8. Get unit prices (CAU_HINH_GIA)
-    activate DB
-    DB -->> Service : 9. List<CauHinhGia>
-    deactivate DB
-
-    Service -> DB : 10. Count XE where hop_dong_id = ?
-    activate DB
-    DB -->> Service : 11. Vehicle Count
-    deactivate DB
-
-    Service -> Service : 12. Calculate: totalAmount = (Room + Elec + Water + Vehicle + Trash)
-
-    Service -> DB : 13. INSERT INTO HOA_DON (...)
-    note right: da_thanh_toan = FALSE\nhinh_thuc = 'CHUA_THU'
-    activate DB
-    DB -->> Service : 14. Save Success
-    deactivate DB
-end
-
-Service -->> Controller : 15. Return list of created bills
+deactivate DataStore
+deactivate Repository
 deactivate Service
-
-Controller -->> View : 16. Display billing preview
 deactivate Controller
+deactivate Facade
 
-View -->> Staff : 17. Hiển thị danh sách hóa đơn vừa tạo thành công
+View -> View : 14. Refresh bang invoices()
+View -->> Staff : 15. Hien danh sach hoa don vua tao
 @enduml

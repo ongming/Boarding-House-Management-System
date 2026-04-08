@@ -3,33 +3,30 @@ skinparam style strictuml
 
 |Nhân viên|
 start
-:Tìm kiếm hóa đơn (Phòng/Khách);
-:Hệ thống hiển thị tổng tiền cần thu;
+:Tìm và chọn hóa đơn cần thu;
 
-if (Trạng thái?) then (Đã thanh toán)
-    :Thông báo: "Hóa đơn đã hoàn tất";
-    stop
-else (Chưa thanh toán)
-    :Chọn "Xác nhận thu tiền";
+if (Hóa đơn đã thanh toán?) then (Có)
+  :Thông báo "Hóa đơn đã hoàn tất";
+  stop
+else (Không)
 endif
 
-:Hỏi khách hình thức thanh toán;
+:Chọn hình thức thanh toán;
 
 if (Hình thức?) then (Chuyển khoản)
-    :Hiển thị QR ngân hàng Admin;
-    :Khách chuyển khoản;
-    :Nhân viên xác nhận tiền đã đi (trên máy khách);
+  :Yêu cầu khách chuyển khoản;
+  :Xác nhận đã nhận tiền;
 else (Tiền mặt)
-    :Nhận tiền mặt từ khách;
+  :Thu tiền mặt từ khách;
 endif
 
 |Hệ thống|
-:Cập nhật **da_thanh_toan = TRUE**;
-:Lưu **hinh_thuc_thanh_toan**;
-:Ghi nhận **ngay_thanh_toan**;
+:Cập nhật trạng thái đã thanh toán;
+:Lưu hình thức thanh toán;
+:Ghi nhận ngày thanh toán;
 
 |Nhân viên|
 :Thông báo thu tiền thành công;
-:Xuất hóa đơn/Biên nhận;
+:In biên nhận cho khách;
 stop
 @enduml

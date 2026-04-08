@@ -1,0 +1,13 @@
+Mô tả luồng tuần tự:
+
+Actor: Admin.
+
+Presentation Layer: Giao diện `AdminFeaturePanels.roomManagementPanel` cho phép Admin mở màn hình quản lý phòng, xem danh sách phòng theo tầng, thêm/sửa thông tin phòng và xóa phòng. Khi thao tác, View lần lượt gọi `AdminController.rooms()`, `AdminController.saveRoom(roomItem)` hoặc `AdminController.deleteRoom(roomId)`.
+
+Controller Layer (`AdminController`): Nhiệm vụ: Nhận thao tác từ giao diện, điều phối đúng nghiệp vụ quản lý phòng (tải danh sách, lưu cập nhật, xóa), trả kết quả cho View để render danh sách và hiển thị thông báo trạng thái.
+
+Service Layer (`AdminService`): Nhiệm vụ: Xử lý logic nghiệp vụ trung tâm quản lý phòng. Service gọi repository để lấy danh sách phòng, thực hiện lưu phòng (thêm mới/cập nhật), và kiểm tra điều kiện nghiệp vụ khi xóa (ví dụ chỉ cho xóa khi phòng trống).
+
+Repository / Transaction Layer (`AdminRoomRepository` -> `JpaAdminDataStore`): Nhiệm vụ: Thực thi truy vấn và cập nhật CSDL với MySQL, gồm `SELECT` danh sách phòng, `INSERT/UPDATE` phòng, và `DELETE` phòng theo điều kiện nghiệp vụ. Các thao tác ghi dữ liệu được chạy trong transaction; nếu phát sinh lỗi thì rollback để tránh dữ liệu không nhất quán.
+
+Kết quả trả về giao diện: View cập nhật lại danh sách phòng ngay sau khi lưu/xóa, hiển thị thông báo thành công hoặc lỗi validation, giúp Admin theo dõi trạng thái quản lý phòng theo thời gian thực.

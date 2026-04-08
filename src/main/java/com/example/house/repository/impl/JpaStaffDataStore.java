@@ -84,6 +84,7 @@ public class JpaStaffDataStore implements StaffDataStore {
                 BigDecimal.valueOf(deposit),
                 BigDecimal.valueOf(rentFee),
                 LocalDate.now(),
+                LocalDate.now(),
                 null,
                 null,
                 1,
@@ -97,8 +98,8 @@ public class JpaStaffDataStore implements StaffDataStore {
 
     @Override
     public ContractItem addContractFull(String roomCode, String tenantName, String tenantCccd, String tenantPhone,
-                                        LocalDate startDate, LocalDate endDate, String contractImageUrl,
-                                        int occupantCount, double rentFee, double deposit) {
+                                        LocalDate startDate, LocalDate moveInDate, LocalDate endDate,
+                                        String contractImageUrl, int occupantCount, double rentFee, double deposit) {
         Contract contract = workflowService.processContractCreation(new ContractCreationRequest(
                 roomCode,
                 tenantName,
@@ -107,6 +108,7 @@ public class JpaStaffDataStore implements StaffDataStore {
                 BigDecimal.valueOf(deposit),
                 BigDecimal.valueOf(rentFee),
                 startDate,
+                moveInDate,
                 endDate,
                 contractImageUrl,
                 occupantCount,
@@ -114,6 +116,13 @@ public class JpaStaffDataStore implements StaffDataStore {
                 null
         ));
 
+        refreshAll();
+        return toContractItem(contract);
+    }
+
+    @Override
+    public ContractItem updateContractMoveInDate(int contractId, LocalDate moveInDate) {
+        Contract contract = workflowService.updateContractMoveInDate(contractId, moveInDate);
         refreshAll();
         return toContractItem(contract);
     }
@@ -228,6 +237,7 @@ public class JpaStaffDataStore implements StaffDataStore {
                 ? contract.getRoom().getBaseRent().doubleValue() : 0.0;
         double deposit = contract.getDeposit() != null ? contract.getDeposit().doubleValue() : 0.0;
         LocalDate startDate = contract.getStartDate() != null ? contract.getStartDate() : LocalDate.now();
+        LocalDate moveInDate = contract.getMoveInDate();
         LocalDate endDate = contract.getEndDate();
         String contractImageUrl = contract.getContractImageUrl();
 
@@ -238,6 +248,7 @@ public class JpaStaffDataStore implements StaffDataStore {
                 roomFee,
                 deposit,
                 startDate,
+                moveInDate,
                 endDate,
                 contractImageUrl,
                 LocalDateTime.now()

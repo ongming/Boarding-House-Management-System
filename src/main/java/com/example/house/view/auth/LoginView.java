@@ -111,8 +111,6 @@ public class LoginView {
                         : passwordField.getText();
                 Account account = loginController.login(usernameField.getText(), password);
                 openDashboard(account);
-                Stage stage = (Stage) root.getScene().getWindow();
-                stage.close();
             } catch (IllegalArgumentException ex) {
                 messageLabel.setText(ex.getMessage());
             }
@@ -138,36 +136,36 @@ public class LoginView {
     }
 
     private void openDashboard(Account account) {
-        Stage dashboardStage = new Stage();
-        Runnable onLogout = () -> {
-            dashboardStage.close();
-            showLoginStage();
-        };
+        Stage stage = (Stage) root.getScene().getWindow();
+        Runnable onLogout = () -> showLoginOnStage(stage);
 
         if (account.getAccountType() == AccountType.NHAN_VIEN) {
             var staffDashboardView = composition.buildStaffDashboard(account.getFullName(), onLogout);
-            dashboardStage.setTitle("Bảng điều khiển nhân viên");
-            dashboardStage.setScene(new Scene(staffDashboardView.getRoot(), 980, 620));
+            stage.setTitle("Bảng điều khiển nhân viên");
+            stage.setScene(new Scene(staffDashboardView.getRoot(), 980, 620));
         } else if (account.getAccountType() == AccountType.ADMIN) {
             var adminDashboardView = composition.buildAdminDashboard(account.getFullName(), onLogout);
-            dashboardStage.setTitle("Bảng điều khiển quản trị");
-            dashboardStage.setScene(new Scene(adminDashboardView.getRoot(), 1080, 680));
+            stage.setTitle("Bảng điều khiển quản trị");
+            stage.setScene(new Scene(adminDashboardView.getRoot(), 1080, 680));
         } else {
             DashboardView dashboardView = new DashboardView(account.getFullName());
-            dashboardStage.setTitle("Dashboard");
-            dashboardStage.setScene(new Scene(dashboardView.getRoot(), 700, 480));
+            stage.setTitle("Dashboard");
+            stage.setScene(new Scene(dashboardView.getRoot(), 700, 480));
         }
 
-        dashboardStage.show();
+        stage.setResizable(true);
+        stage.setMaximized(true);
+        stage.show();
     }
 
-    private void showLoginStage() {
+    private void showLoginOnStage(Stage stage) {
         LoginView loginView = new LoginView(loginController);
-        Stage loginStage = new Stage();
-        loginStage.setTitle("Boarding House Management - Login");
-        loginStage.setResizable(false);
-        loginStage.setScene(new Scene(loginView.getRoot(), 500, 420));
-        loginStage.show();
+        stage.setTitle("Boarding House Management - Login");
+        stage.setMaximized(false);
+        stage.setResizable(false);
+        stage.setScene(new Scene(loginView.getRoot(), 500, 420));
+        stage.centerOnScreen();
+        stage.show();
     }
 
     public Parent getRoot() {

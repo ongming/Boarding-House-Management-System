@@ -1,42 +1,54 @@
 @startuml
 skinparam style strictuml
-skinparam maxMessageSize 150
+skinparam maxMessageSize 180
 
 actor "Admin" as Admin
-participant "StaffAccountPanel\n(View)" as View
+participant "AdminFeaturePanels.staffAccountPanel\n(View)" as View
+participant "AdminController\n(Facade)" as Facade
 participant "StaffAccountController" as Controller
-participant "StaffAccountService" as Service
+participant "AdminService" as Service
+participant "AdminStaffAccountRepository" as Repository
+participant "JpaAdminDataStore" as DataStore
 database "MySQL\n(BoardingHouse_DB)" as DB
 
 Note over Admin, DB: CREATE STAFF ACCOUNT (ADMIN)
 
-Admin -> View : 1. Open staff account screen
-View -> Controller : 2. submitNewStaff(username, password, fullName, shiftInfo)
+Admin -> View : 1. Nhap username/password/fullName/shift
+View -> Facade : 2. createStaffAccount(...)
+activate Facade
+
+Facade -> Controller : 3. createStaffAccount(...)
 activate Controller
-Controller -> Service : 3. createStaffAccount(data)
+Controller -> Service : 4. createStaffAccount(...)
 activate Service
+Service -> Repository : 5. createStaffAccount(...)
+activate Repository
+Repository -> DataStore : 6. createStaffAccount(...)
+activate DataStore
 
-Service -> DB : 4. SELECT COUNT(*) FROM TAI_KHOAN WHERE ten_dang_nhap = ?
+DataStore -> DB : 7. Kiem tra username ton tai
 activate DB
-DB -->> Service : 5. count
-Deactivate DB
-
-alt Username exists
-    Service -->> Controller : 6. Error: duplicate username
-else Username available
-    Service -> Service : 7. Hash password
-    Service -> DB : 8. Begin Transaction
-    activate DB
-    Service -> DB : 9. INSERT INTO TAI_KHOAN (loai_tai_khoan = 'NHAN_VIEN')
-    DB -->> Service : 10. tai_khoan_id
-    Service -> DB : 11. INSERT INTO NHAN_VIEN (tai_khoan_id, ca_lam_viec)
-    Service -> DB : 12. Commit
-    DB -->> Service : 13. Success
-    deactivate DB
-    Service -->> Controller : 14. Create success
+DB -->> DataStore : 8. Count
+alt Username da ton tai
+    DataStore -->> Repository : 9. Validation error
+    Repository -->> Service : 10. Validation error
+    Service -->> Controller : 11. Validation error
+    Controller -->> Facade : 12. Validation error
+    Facade -->> View : 13. Show duplicate message
+else Username hop le
+    DataStore -> DB : 14. INSERT TAI_KHOAN + INSERT NHAN_VIEN (transaction)
+    DB -->> DataStore : 15. StaffAccountItem
+    DataStore -->> Repository : 16. StaffAccountItem
+    Repository -->> Service : 17. StaffAccountItem
+    Service -->> Controller : 18. StaffAccountItem
+    Controller -->> Facade : 19. Create success
+    Facade -->> View : 20. Show result message
 end
 
-Deactivate Service
-Controller -->> View : 15. Show result message
-Deactivate Controller
+deactivate DB
+deactivate DataStore
+deactivate Repository
+deactivate Service
+deactivate Controller
+deactivate Facade
 @enduml

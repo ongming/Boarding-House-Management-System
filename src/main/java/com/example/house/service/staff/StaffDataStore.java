@@ -21,11 +21,14 @@ public interface StaffDataStore extends com.example.house.model.dto.staff.StaffD
                                  String tenantCccd,
                                  String tenantPhone,
                                  LocalDate startDate,
+                                 LocalDate moveInDate,
                                  LocalDate endDate,
                                  String contractImageUrl,
                                  int occupantCount,
                                  double rentFee,
                                  double deposit);
+
+    ContractItem updateContractMoveInDate(int contractId, LocalDate moveInDate);
 
     VehicleItem addVehicle(String roomCode, String vehicleType, String plateNumber, double monthlyFee);
     OccupancyItem upsertOccupancy(String roomCode, int peopleCount);

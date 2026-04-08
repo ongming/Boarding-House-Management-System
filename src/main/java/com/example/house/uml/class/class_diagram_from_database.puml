@@ -1,6 +1,13 @@
 @startuml
 skinparam style strictuml
 hide methods
+hide circle
+left to right direction
+
+legend right
+  {PK} Primary key
+  {FK} Foreign key
+endlegend
 
 ' =========================
 ' Enums mapped from SQL ENUM
@@ -37,7 +44,7 @@ enum FeedbackStatus {
 ' Classes mapped from tables
 ' =========================
 class TaiKhoan <<TAI_KHOAN>> {
-  +id: int
+  +id: int {PK}
   +tenDangNhap: String
   +matKhau: String
   +hoTen: String
@@ -45,105 +52,105 @@ class TaiKhoan <<TAI_KHOAN>> {
 }
 
 class NhanVien <<NHAN_VIEN>> {
-  +id: int
-  +taiKhoanId: int
+  +id: int {PK}
+  +taiKhoanId: int {FK}
   +caLamViec: String
 }
 
 class Phong <<PHONG>> {
-  +id: int
+  +id: int {PK}
   +soPhong: String
   +tang: int
-  +coMayLanh: boolean
-  +giaThueCoBan: decimal
+  +coMayLanh: Boolean
+  +giaThueCoBan: BigDecimal
   +danhSachNoiThat: String
   +trangThai: RoomStatus
 }
 
 class KhachThue <<KHACH_THUE>> {
-  +id: int
+  +id: int {PK}
   +hoTen: String
   +soCccd: String
   +soDienThoai: String
 }
 
 class HopDong <<HOP_DONG>> {
-  +id: int
-  +khachThueId: int
-  +phongId: int
-  +ngayBatDau: Date
-  +ngayKetThuc: Date
-  +tienCoc: decimal
+  +id: int {PK}
+  +khachThueId: int {FK}
+  +phongId: int {FK}
+  +ngayBatDau: LocalDate
+  +ngayKetThuc: LocalDate
+  +tienCoc: BigDecimal
   +anhHopDongUrl: String
   +soLuongNguoiO: int
   +trangThai: ContractStatus
 }
 
 class Xe <<XE>> {
-  +id: int
-  +hopDongId: int
+  +id: int {PK}
+  +hopDongId: int {FK}
   +loaiXe: String
   +bienSo: String
 }
 
 class ChiSoDienNuoc <<CHI_SO_DIEN_NUOC>> {
-  +id: int
-  +phongId: int
+  +id: int {PK}
+  +phongId: int {FK}
   +thang: int
   +nam: int
   +soDienCu: int
   +soDienMoi: int
   +soNuocCu: int
   +soNuocMoi: int
-  +ngayGhi: DateTime
+  +ngayGhi: LocalDateTime
 }
 
 class HoaDon <<HOA_DON>> {
-  +id: int
-  +hopDongId: int
-  +nhanVienId: int
+  +id: int {PK}
+  +hopDongId: int {FK}
+  +nhanVienId: int {FK}
   +thang: int
   +nam: int
-  +tienPhong: decimal
-  +tienDien: decimal
-  +tienNuoc: decimal
-  +tienXe: decimal
-  +tienRac: decimal
-  +tienBoiThuong: decimal
-  +tongTien: decimal
-  +daThanhToan: boolean
+  +tienPhong: BigDecimal
+  +tienDien: BigDecimal
+  +tienNuoc: BigDecimal
+  +tienXe: BigDecimal
+  +tienRac: BigDecimal
+  +tienBoiThuong: BigDecimal
+  +tongTien: BigDecimal
+  +daThanhToan: Boolean
   +ghiChu: String
   +loaiHoaDon: InvoiceType
-  +ngayLap: DateTime
+  +ngayLap: LocalDateTime
 }
 
 class PhanHoi <<PHAN_HOI>> {
-  +id: int
-  +phongId: int
-  +nhanVienId: int
+  +id: int {PK}
+  +phongId: int {FK}
+  +nhanVienId: int {FK}
   +noiDung: String
   +trangThai: FeedbackStatus
-  +ngayGui: DateTime
+  +ngayGui: LocalDateTime
 }
 
 class CauHinhGia <<CAU_HINH_GIA>> {
-  +id: int
+  +id: int {PK}
   +tenLoai: String
-  +donGia: decimal
+  +donGia: BigDecimal
 }
 
 ' =========================
 ' Associations from FK constraints
 ' =========================
-TaiKhoan "1" -- "0..1" NhanVien : tai_khoan_id
-KhachThue "1" -- "0..*" HopDong : khach_thue_id
-Phong "1" -- "0..*" HopDong : phong_id
-HopDong "1" -- "0..*" Xe : hop_dong_id
-Phong "1" -- "0..*" ChiSoDienNuoc : phong_id
-HopDong "1" -- "0..*" HoaDon : hop_dong_id
-NhanVien "1" -- "0..*" HoaDon : nhan_vien_id
-Phong "1" -- "0..*" PhanHoi : phong_id
-NhanVien "1" -- "0..*" PhanHoi : nhan_vien_id
+TaiKhoan "1" -- "0..1" NhanVien : taiKhoanId
+KhachThue "1" -- "0..*" HopDong : khachThueId
+Phong "1" -- "0..*" HopDong : phongId
+HopDong "1" -- "0..*" Xe : hopDongId
+Phong "1" -- "0..*" ChiSoDienNuoc : phongId
+HopDong "1" -- "0..*" HoaDon : hopDongId
+NhanVien "1" -- "0..*" HoaDon : nhanVienId
+Phong "1" -- "0..*" PhanHoi : phongId
+NhanVien "1" -- "0..*" PhanHoi : nhanVienId
 
 @enduml
 

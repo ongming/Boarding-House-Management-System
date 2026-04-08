@@ -1,0 +1,23 @@
+@startuml
+skinparam style strictuml
+
+|Admin|
+start
+:Mở màn hình quản lý phản hồi;
+:Chọn trạng thái cần lọc;
+
+|Hệ thống|
+:Tải danh sách phản hồi theo trạng thái;
+
+|Admin|
+:Chọn phản hồi cần xử lý;
+:Chọn trạng thái mới (ĐANG_SỬA/HOÀN_THÀNH);
+:Nhấn cập nhật;
+
+|Hệ thống|
+:Cập nhật trạng thái phản hồi;
+:Tải lại danh sách;
+:Hiển thị thông báo cập nhật thành công;
+
+stop
+@enduml

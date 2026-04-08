@@ -15,9 +15,12 @@ public interface StaffContractRepository {
                                                 String tenantCccd,
                                                 String tenantPhone,
                                                 LocalDate startDate,
+                                                LocalDate moveInDate,
                                                 LocalDate endDate,
                                                 String contractImageUrl,
                                                 int occupantCount,
                                                 double rentFee,
                                                 double deposit);
+
+    StaffDataStore.ContractItem updateContractMoveInDate(int contractId, LocalDate moveInDate);
 }

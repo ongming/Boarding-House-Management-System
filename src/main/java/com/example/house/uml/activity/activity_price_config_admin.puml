@@ -1,0 +1,26 @@
+@startuml
+skinparam style strictuml
+
+|Admin|
+start
+:Mở màn hình thiết lập đơn giá;
+
+|Hệ thống|
+:Tải danh sách đơn giá hiện tại;
+
+|Admin|
+:Chọn loại đơn giá;
+:Nhập đơn giá mới;
+:Nhấn "Lưu đơn giá";
+
+|Hệ thống|
+:Kiểm tra dữ liệu hợp lệ;
+if (Hợp lệ?) then (Có)
+  :Cập nhật đơn giá vào hệ thống;
+  :Hiển thị thông báo thành công;
+else (Không)
+  :Hiển thị thông báo lỗi dữ liệu;
+endif
+
+stop
+@enduml
