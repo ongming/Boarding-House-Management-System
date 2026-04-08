@@ -14,6 +14,7 @@ import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -176,6 +177,8 @@ public class StaffFeaturePanels {
         ));
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         table.setStyle(tableStyle());
+        table.setPrefHeight(280);
+        table.setMinHeight(220);
 
         table.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, selected) -> {
             if (selected == null) {
@@ -261,17 +264,19 @@ public class StaffFeaturePanels {
         Label tableTitle = new Label("Danh sách hợp đồng");
         tableTitle.setStyle("-fx-font-size: 17; -fx-font-weight: bold; -fx-text-fill: #1e293b;");
 
-        Region spacer = new Region();
-        VBox.setVgrow(spacer, Priority.ALWAYS);
-
         VBox header = new VBox(8, pageTitle, subtitle);
         header.setPadding(new Insets(16));
         header.setStyle(cardStyle("linear-gradient(to right, #eff6ff, #f8fafc)", "#bfdbfe"));
 
-        VBox box = new VBox(16, header, cards, actions, tableTitle, table, spacer);
+        VBox box = new VBox(16, header, cards, actions, tableTitle, table);
         box.setPadding(new Insets(4));
-        VBox.setVgrow(table, Priority.ALWAYS);
-        return box;
+        ScrollPane scrollPane = new ScrollPane(box);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setPannable(true);
+        scrollPane.setStyle("-fx-background-color: transparent; -fx-background: transparent;");
+        return scrollPane;
     }
 
     public Node vehiclePanel() {
