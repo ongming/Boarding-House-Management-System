@@ -133,5 +133,3 @@ Các mục nên ignore:
 - out/
 - logs/
 - .DS_Store
-
-Repository hiện đã có tệp gitignore đầy đủ hơn ở thư mục gốc.
