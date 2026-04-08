@@ -1,4 +1,4 @@
-package com.example.house.repository.staff;
+package com.example.house.repository;
 
 import com.example.house.model.entity.Feedback;
 import com.example.house.model.enums.FeedbackStatus;
@@ -15,5 +15,3 @@ public interface FeedbackRepository {
 
     List<Feedback> findByStatus(FeedbackStatus status);
 }
-
-

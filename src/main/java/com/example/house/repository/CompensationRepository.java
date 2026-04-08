@@ -1,4 +1,4 @@
-package com.example.house.repository.staff;
+package com.example.house.repository;
 
 import com.example.house.model.entity.Compensation;
 
@@ -14,4 +14,3 @@ public interface CompensationRepository {
 
     List<Compensation> findByContractIdAndCollected(Integer contractId, boolean collected);
 }
-

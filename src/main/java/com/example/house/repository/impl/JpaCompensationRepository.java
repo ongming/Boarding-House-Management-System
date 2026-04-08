@@ -1,7 +1,7 @@
 package com.example.house.repository.impl;
 
 import com.example.house.model.entity.Compensation;
-import com.example.house.repository.staff.CompensationRepository;
+import com.example.house.repository.CompensationRepository;
 
 import java.util.List;
 import java.util.Optional;

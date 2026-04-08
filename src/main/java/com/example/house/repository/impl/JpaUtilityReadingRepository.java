@@ -1,7 +1,7 @@
 package com.example.house.repository.impl;
 
 import com.example.house.model.entity.UtilityReading;
-import com.example.house.repository.staff.UtilityReadingRepository;
+import com.example.house.repository.UtilityReadingRepository;
 
 import java.util.List;
 import java.util.Optional;

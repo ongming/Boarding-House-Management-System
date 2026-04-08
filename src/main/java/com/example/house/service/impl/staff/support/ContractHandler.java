@@ -7,11 +7,11 @@ import com.example.house.model.entity.UtilityReading;
 import com.example.house.model.entity.Vehicle;
 import com.example.house.model.enums.ContractStatus;
 import com.example.house.model.enums.RoomStatus;
-import com.example.house.repository.staff.ContractRepository;
-import com.example.house.repository.staff.RoomRepository;
-import com.example.house.repository.staff.TenantRepository;
-import com.example.house.repository.staff.UtilityReadingRepository;
-import com.example.house.repository.staff.VehicleRepository;
+import com.example.house.repository.ContractRepository;
+import com.example.house.repository.RoomRepository;
+import com.example.house.repository.TenantRepository;
+import com.example.house.repository.UtilityReadingRepository;
+import com.example.house.repository.VehicleRepository;
 import com.example.house.model.dto.staff.ContractCreationRequest;
 
 import java.math.BigDecimal;

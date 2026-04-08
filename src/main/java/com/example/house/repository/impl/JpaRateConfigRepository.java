@@ -2,7 +2,7 @@ package com.example.house.repository.impl;
 
 import com.example.house.model.entity.RateConfig;
 import com.example.house.model.enums.RateType;
-import com.example.house.repository.staff.RateConfigRepository;
+import com.example.house.repository.RateConfigRepository;
 
 import java.util.List;
 import java.util.Optional;

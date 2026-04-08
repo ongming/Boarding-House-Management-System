@@ -3,7 +3,7 @@ package com.example.house.controller.staff.home;
 import com.example.house.model.dto.staff.StaffRoomSnapshot;
 import com.example.house.model.entity.Room;
 import com.example.house.model.enums.RoomStatus;
-import com.example.house.repository.staff.RoomRepository;
+import com.example.house.repository.RoomRepository;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 

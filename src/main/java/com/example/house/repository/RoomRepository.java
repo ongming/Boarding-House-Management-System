@@ -1,4 +1,4 @@
-package com.example.house.repository.staff;
+package com.example.house.repository;
 
 import com.example.house.model.entity.Room;
 
@@ -16,5 +16,3 @@ public interface RoomRepository {
 
     void deleteById(Integer id);
 }
-
-

@@ -33,7 +33,7 @@ public class DefaultAdminContentFactory implements AdminContentFactory {
 
     private Node buildOverview() {
         Label title = new Label("Tổng quan quản trị");
-        title.setStyle("-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #1f2937;");
+        title.setStyle("-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #2c3e50;");
 
         Label content = new Label("Chọn chức năng ở menu trái để cấu hình và giám sát vận hành.");
         content.setWrapText(true);

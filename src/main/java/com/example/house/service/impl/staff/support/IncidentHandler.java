@@ -4,9 +4,9 @@ import com.example.house.model.entity.Employee;
 import com.example.house.model.entity.Feedback;
 import com.example.house.model.entity.Room;
 import com.example.house.model.enums.FeedbackStatus;
-import com.example.house.repository.staff.EmployeeRepository;
-import com.example.house.repository.staff.FeedbackRepository;
-import com.example.house.repository.staff.RoomRepository;
+import com.example.house.repository.EmployeeRepository;
+import com.example.house.repository.FeedbackRepository;
+import com.example.house.repository.RoomRepository;
 
 import java.time.LocalDateTime;
 

@@ -1,4 +1,4 @@
-package com.example.house.repository.staff;
+package com.example.house.repository;
 
 import com.example.house.model.entity.Vehicle;
 
@@ -15,5 +15,3 @@ public interface VehicleRepository {
 
     int deleteByContractId(Integer contractId);
 }
-
-

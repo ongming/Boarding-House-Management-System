@@ -1,4 +1,4 @@
-package com.example.house.repository.staff;
+package com.example.house.repository;
 
 import com.example.house.model.entity.UtilityReading;
 
@@ -14,5 +14,3 @@ public interface UtilityReadingRepository {
 
     List<UtilityReading> findByPeriod(int month, int year);
 }
-
-

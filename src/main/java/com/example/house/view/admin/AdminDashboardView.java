@@ -44,7 +44,7 @@ public class AdminDashboardView {
         VietnameseTextNormalizer.normalizeNodeTree(root);
     }
 
-    private HBox buildHeader(String fullName) {
+    private VBox buildHeader(String fullName) {
         String displayName = (fullName == null || fullName.isBlank()) ? "Quản trị viên" : fullName;
 
         HBox header = new HBox(12);
@@ -54,7 +54,7 @@ public class AdminDashboardView {
 
         Circle avatar = new Circle(20);
         avatar.setFill(Color.web("#60a5fa"));
-        avatar.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.35), 6, 0, 0, 1);");
+        avatar.setStyle("-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0, 0, 0);");
 
         VBox textBox = new VBox(2);
         Label title = new Label("Bảng điều khiển quản trị");
@@ -77,7 +77,7 @@ public class AdminDashboardView {
         });
 
         header.getChildren().addAll(avatar, textBox, logoutButton);
-        return header;
+        return new VBox(header);
     }
 
     private VBox buildMenu() {
@@ -88,12 +88,12 @@ public class AdminDashboardView {
 
         Label menuTitle = new Label("CHỨC NĂNG ADMIN");
         menuTitle.setFont(Font.font("Segoe UI", FontWeight.BOLD, 13));
-        menuTitle.setTextFill(Color.web("#475569"));
+        menuTitle.setTextFill(Color.web("#7f8c8d"));
 
         ListView<AdminFeature> featureList = new ListView<>();
         featureList.setItems(FXCollections.observableArrayList(AdminFeature.values()));
         featureList.setCellFactory(param -> new AdminMenuCell());
-        featureList.setPrefHeight(560);
+        featureList.setPrefHeight(500);
         featureList.setStyle("-fx-padding: 4; -fx-font-size: 12;");
 
         featureList.getSelectionModel().selectedItemProperty().addListener((obs, oldItem, selectedItem) -> {

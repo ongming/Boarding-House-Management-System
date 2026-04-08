@@ -3,7 +3,7 @@ package com.example.house.repository.impl;
 import com.example.house.config.JpaUtil;
 import com.example.house.model.entity.Contract;
 import com.example.house.model.enums.ContractStatus;
-import com.example.house.repository.staff.ContractRepository;
+import com.example.house.repository.ContractRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 

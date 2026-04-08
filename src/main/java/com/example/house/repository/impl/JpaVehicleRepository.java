@@ -1,7 +1,7 @@
 package com.example.house.repository.impl;
 
 import com.example.house.model.entity.Vehicle;
-import com.example.house.repository.staff.VehicleRepository;
+import com.example.house.repository.VehicleRepository;
 
 import java.util.List;
 

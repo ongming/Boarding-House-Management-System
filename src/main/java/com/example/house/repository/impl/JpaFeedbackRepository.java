@@ -2,7 +2,7 @@ package com.example.house.repository.impl;
 
 import com.example.house.model.entity.Feedback;
 import com.example.house.model.enums.FeedbackStatus;
-import com.example.house.repository.staff.FeedbackRepository;
+import com.example.house.repository.FeedbackRepository;
 
 import java.util.List;
 import java.util.Optional;

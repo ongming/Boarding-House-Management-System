@@ -5,91 +5,71 @@ import com.example.house.model.enums.CompensationPaymentMethod;
 import com.example.house.model.enums.FeedbackStatus;
 import com.example.house.model.enums.RateType;
 import com.example.house.model.enums.RoomStatus;
-import com.example.house.repository.admin.feature.AdminCheckoutRepository;
-import com.example.house.repository.admin.feature.AdminFeedbackRepository;
-import com.example.house.repository.admin.feature.AdminInvoiceRepository;
-import com.example.house.repository.admin.feature.AdminRateConfigRepository;
-import com.example.house.repository.admin.feature.AdminRevenueRepository;
-import com.example.house.repository.admin.feature.AdminRoomRepository;
-import com.example.house.repository.admin.feature.AdminStaffAccountRepository;
 import com.example.house.service.admin.AdminDataStore;
 import com.example.house.service.admin.AdminService;
+import com.example.house.repository.impl.JpaAdminDataStore;
 import javafx.collections.ObservableList;
 
 public class AdminServiceImpl implements AdminService {
-    private final AdminRateConfigRepository rateConfigRepository;
-    private final AdminRoomRepository roomRepository;
-    private final AdminStaffAccountRepository staffAccountRepository;
-    private final AdminRevenueRepository revenueRepository;
-    private final AdminCheckoutRepository checkoutRepository;
-    private final AdminFeedbackRepository feedbackRepository;
-    private final AdminInvoiceRepository invoiceRepository;
+    private final AdminDataStore dataStore;
 
-    public AdminServiceImpl(AdminRateConfigRepository rateConfigRepository,
-                            AdminRoomRepository roomRepository,
-                            AdminStaffAccountRepository staffAccountRepository,
-                            AdminRevenueRepository revenueRepository,
-                            AdminCheckoutRepository checkoutRepository,
-                            AdminFeedbackRepository feedbackRepository,
-                            AdminInvoiceRepository invoiceRepository) {
-        this.rateConfigRepository = rateConfigRepository;
-        this.roomRepository = roomRepository;
-        this.staffAccountRepository = staffAccountRepository;
-        this.revenueRepository = revenueRepository;
-        this.checkoutRepository = checkoutRepository;
-        this.feedbackRepository = feedbackRepository;
-        this.invoiceRepository = invoiceRepository;
+    public AdminServiceImpl() {
+        this(new JpaAdminDataStore());
+    }
+
+    public AdminServiceImpl(AdminDataStore dataStore) {
+        this.dataStore = dataStore;
     }
 
     @Override
-    public ObservableList<AdminDataStore.RateItem> rateConfigs() { return rateConfigRepository.rateConfigs(); }
+    public ObservableList<AdminDataStore.RateItem> rateConfigs() { return dataStore.rateConfigs(); }
     @Override
-    public ObservableList<AdminDataStore.RoomItem> rooms() { return roomRepository.rooms(); }
+    public ObservableList<AdminDataStore.RoomItem> rooms() { return dataStore.rooms(); }
     @Override
-    public ObservableList<AdminDataStore.StaffAccountItem> staffAccounts() { return staffAccountRepository.staffAccounts(); }
+    public ObservableList<AdminDataStore.StaffAccountItem> staffAccounts() { return dataStore.staffAccounts(); }
     @Override
-    public ObservableList<AdminDataStore.RevenueRow> revenueRows() { return revenueRepository.revenueRows(); }
+    public ObservableList<AdminDataStore.RevenueRow> revenueRows() { return dataStore.revenueRows(); }
     @Override
-    public ObservableList<AdminDataStore.CheckoutItem> pendingCheckouts() { return checkoutRepository.pendingCheckouts(); }
+    public ObservableList<AdminDataStore.CheckoutItem> pendingCheckouts() { return dataStore.pendingCheckouts(); }
     @Override
-    public ObservableList<AdminDataStore.FeedbackItem> feedbacks() { return feedbackRepository.feedbacks(); }
+    public ObservableList<AdminDataStore.FeedbackItem> feedbacks() { return dataStore.feedbacks(); }
     @Override
-    public ObservableList<AdminDataStore.InvoiceItem> invoices() { return invoiceRepository.invoices(); }
+    public ObservableList<AdminDataStore.InvoiceItem> invoices() { return dataStore.invoices(); }
 
     @Override
-    public void refreshAll() { feedbackRepository.refreshAll(); }
+    public void refreshAll() { dataStore.refreshAll(); }
     @Override
-    public AdminDataStore.RateItem saveRate(RateType type, double unitPrice) { return rateConfigRepository.saveRate(type, unitPrice); }
+    public AdminDataStore.RateItem saveRate(RateType type, double unitPrice) { return dataStore.saveRate(type, unitPrice); }
     @Override
-    public AdminDataStore.RoomItem saveRoom(AdminDataStore.RoomItem item) { return roomRepository.saveRoom(item); }
+    public AdminDataStore.RoomItem saveRoom(AdminDataStore.RoomItem item) { return dataStore.saveRoom(item); }
     @Override
-    public void deleteRoom(Integer roomId) { roomRepository.deleteRoom(roomId); }
+    public void deleteRoom(Integer roomId) { dataStore.deleteRoom(roomId); }
     @Override
     public AdminDataStore.StaffAccountItem createStaffAccount(String username, String password, String fullName, String shiftSchedule) {
-        return staffAccountRepository.createStaffAccount(username, password, fullName, shiftSchedule);
+        return dataStore.createStaffAccount(username, password, fullName, shiftSchedule);
     }
     @Override
     public void refreshRevenue(AdminRevenuePeriod period, int year, Integer periodValue) {
-        revenueRepository.refreshRevenue(period, year, periodValue);
+        dataStore.refreshRevenue(period, year, periodValue);
     }
     @Override
     public AdminDataStore.CheckoutSummary buildCheckoutSummary(Integer contractId) {
-        return checkoutRepository.buildCheckoutSummary(contractId);
+        return dataStore.buildCheckoutSummary(contractId);
     }
     @Override
-    public void addCompensation(Integer contractId, double amount, String reason) { checkoutRepository.addCompensation(contractId, amount, reason); }
+    public void addCompensation(Integer contractId, double amount, String reason) { dataStore.addCompensation(contractId, amount, reason); }
     @Override
     public void approveCheckout(Integer contractId, RoomStatus roomStatus, CompensationPaymentMethod paymentMethod) {
-        checkoutRepository.approveCheckout(contractId, roomStatus, paymentMethod);
+        dataStore.approveCheckout(contractId, roomStatus, paymentMethod);
     }
     @Override
-    public AdminDataStore.FeedbackItem updateFeedbackStatus(Integer id, FeedbackStatus status) { return feedbackRepository.updateFeedbackStatus(id, status); }
+    public AdminDataStore.FeedbackItem updateFeedbackStatus(Integer id, FeedbackStatus status) { return dataStore.updateFeedbackStatus(id, status); }
     @Override
-    public void getFeedbacksByStatus(FeedbackStatus status) { feedbackRepository.getFeedbacksByStatus(status); }
+    public void getFeedbacksByStatus(FeedbackStatus status) { dataStore.getFeedbacksByStatus(status); }
     @Override
     public void searchInvoices(String roomNumber, Integer month, Integer year, Boolean paid) {
-        invoiceRepository.searchInvoices(roomNumber, month, year, paid);
+        dataStore.searchInvoices(roomNumber, month, year, paid);
     }
     @Override
-    public void reloadInvoices() { invoiceRepository.reloadInvoices(); }
+    public void reloadInvoices() { dataStore.reloadInvoices(); }
 }

@@ -1,4 +1,4 @@
-package com.example.house.repository.staff;
+package com.example.house.repository;
 
 import com.example.house.model.entity.Employee;
 
@@ -14,5 +14,3 @@ public interface EmployeeRepository {
 
     List<Employee> findAll();
 }
-
-

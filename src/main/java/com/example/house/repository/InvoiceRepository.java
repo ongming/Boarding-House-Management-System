@@ -1,4 +1,4 @@
-package com.example.house.repository.staff;
+package com.example.house.repository;
 
 import com.example.house.model.entity.Invoice;
 
@@ -16,5 +16,3 @@ public interface InvoiceRepository {
 
     List<Invoice> findByFilters(String roomNumber, Integer month, Integer year, Boolean paid);
 }
-
-

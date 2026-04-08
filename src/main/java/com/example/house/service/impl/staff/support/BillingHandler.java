@@ -7,12 +7,12 @@ import com.example.house.model.entity.RateConfig;
 import com.example.house.model.entity.UtilityReading;
 import com.example.house.model.enums.InvoicePaymentMethod;
 import com.example.house.model.enums.RateType;
-import com.example.house.repository.staff.ContractRepository;
-import com.example.house.repository.staff.EmployeeRepository;
-import com.example.house.repository.staff.InvoiceRepository;
-import com.example.house.repository.staff.RateConfigRepository;
-import com.example.house.repository.staff.UtilityReadingRepository;
-import com.example.house.repository.staff.VehicleRepository;
+import com.example.house.repository.ContractRepository;
+import com.example.house.repository.EmployeeRepository;
+import com.example.house.repository.InvoiceRepository;
+import com.example.house.repository.RateConfigRepository;
+import com.example.house.repository.UtilityReadingRepository;
+import com.example.house.repository.VehicleRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package com.example.house.repository.staff;
+package com.example.house.repository;
 
 import com.example.house.model.entity.Contract;
 
@@ -16,5 +16,3 @@ public interface ContractRepository {
 
     Optional<Contract> findActiveByRoomId(Integer roomId);
 }
-
-

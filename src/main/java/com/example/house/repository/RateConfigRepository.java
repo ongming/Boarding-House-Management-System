@@ -1,4 +1,4 @@
-package com.example.house.repository.staff;
+package com.example.house.repository;
 
 import com.example.house.model.entity.RateConfig;
 import com.example.house.model.enums.RateType;
@@ -13,5 +13,3 @@ public interface RateConfigRepository {
 
     RateConfig save(RateConfig config);
 }
-
-

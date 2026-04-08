@@ -1,7 +1,7 @@
 package com.example.house.repository.impl;
 
 import com.example.house.model.entity.Tenant;
-import com.example.house.repository.staff.TenantRepository;
+import com.example.house.repository.TenantRepository;
 
 public class JpaTenantRepository extends JpaRepositorySupport implements TenantRepository {
     @Override

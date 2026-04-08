@@ -1,7 +1,7 @@
 package com.example.house.repository.impl;
 
 import com.example.house.model.entity.Invoice;
-import com.example.house.repository.staff.InvoiceRepository;
+import com.example.house.repository.InvoiceRepository;
 import jakarta.persistence.TypedQuery;
 
 import java.util.List;
