@@ -20,6 +20,8 @@ public interface AdminDataStore extends com.example.house.model.dto.admin.AdminD
     RoomItem saveRoom(RoomItem item);
     void deleteRoom(Integer roomId);
     StaffAccountItem createStaffAccount(String username, String password, String fullName, String shiftSchedule);
+    StaffAccountItem updateStaffAccount(Integer employeeId, String username, String password, String fullName, String shiftSchedule);
+    void deleteStaffAccount(Integer employeeId);
     void refreshRevenue(com.example.house.model.enums.AdminRevenuePeriod period, int year, Integer periodValue);
     CheckoutSummary buildCheckoutSummary(Integer contractId);
     void addCompensation(Integer contractId, double amount, String reason);

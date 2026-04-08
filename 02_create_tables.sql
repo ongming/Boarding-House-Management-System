@@ -38,6 +38,7 @@ CREATE TABLE HOP_DONG (
     khach_thue_id INT,
     phong_id INT,
     ngay_bat_dau DATE NOT NULL,
+    ngay_don_vao DATE,
     ngay_ket_thuc DATE,
     tien_coc DECIMAL(15, 2),
     anh_hop_dong_url VARCHAR(255),

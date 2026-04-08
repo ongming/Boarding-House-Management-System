@@ -106,27 +106,27 @@ INSERT INTO KHACH_THUE (id, ho_ten, so_cccd, so_dien_thoai) VALUES
 (19, 'Tran Van S', '079242526011', '0918888999'),
 (20, 'Ho Thi T', '079262728122', '0919999000');
 
-INSERT INTO HOP_DONG (id, khach_thue_id, phong_id, ngay_bat_dau, ngay_ket_thuc, tien_coc, anh_hop_dong_url, so_luong_nguoi_o, trang_thai) VALUES
-(1, 1, 1, '2026-01-01', NULL, 3000000.00, 'https://example.com/contracts/hd001.jpg', 2, 'HIEU_LUC'),
-(2, 2, 2, '2026-02-15', NULL, 3200000.00, 'https://example.com/contracts/hd002.jpg', 1, 'HIEU_LUC'),
-(3, 3, 3, '2025-06-01', '2026-01-31', 2800000.00, 'https://example.com/contracts/hd003.jpg', 1, 'KET_THUC'),
-(4, 4, 4, '2026-03-01', NULL, 3000000.00, 'https://example.com/contracts/hd004.jpg', 2, 'HIEU_LUC'),
-(5, 5, 5, '2026-03-10', NULL, 3300000.00, 'https://example.com/contracts/hd005.jpg', 1, 'HIEU_LUC'),
-(6, 6, 6, '2026-02-01', NULL, 2900000.00, 'https://example.com/contracts/hd006.jpg', 1, 'HIEU_LUC'),
-(7, 7, 7, '2026-01-20', NULL, 2500000.00, 'https://example.com/contracts/hd007.jpg', 2, 'HIEU_LUC'),
-(8, 8, 8, '2026-04-01', NULL, 3500000.00, 'https://example.com/contracts/hd008.jpg', 1, 'HIEU_LUC'),
-(9, 9, 9, '2026-02-25', NULL, 3400000.00, 'https://example.com/contracts/hd009.jpg', 1, 'HIEU_LUC'),
-(10, 10, 10, '2025-12-01', '2026-02-28', 3100000.00, 'https://example.com/contracts/hd010.jpg', 2, 'KET_THUC'),
-(11, 11, 11, '2026-01-05', NULL, 3600000.00, 'https://example.com/contracts/hd011.jpg', 1, 'HIEU_LUC'),
-(12, 12, 12, '2026-01-15', NULL, 3000000.00, 'https://example.com/contracts/hd012.jpg', 2, 'HIEU_LUC'),
-(13, 13, 13, '2026-02-10', NULL, 3400000.00, 'https://example.com/contracts/hd013.jpg', 1, 'HIEU_LUC'),
-(14, 14, 14, '2026-03-05', NULL, 2800000.00, 'https://example.com/contracts/hd014.jpg', 1, 'HIEU_LUC'),
-(15, 15, 15, '2025-10-01', '2026-03-31', 3700000.00, 'https://example.com/contracts/hd015.jpg', 2, 'KET_THUC'),
-(16, 16, 16, '2026-02-20', NULL, 3200000.00, 'https://example.com/contracts/hd016.jpg', 1, 'HIEU_LUC'),
-(17, 17, 17, '2026-03-12', NULL, 3100000.00, 'https://example.com/contracts/hd017.jpg', 1, 'HIEU_LUC'),
-(18, 18, 18, '2026-01-25', NULL, 3600000.00, 'https://example.com/contracts/hd018.jpg', 2, 'HIEU_LUC'),
-(19, 19, 19, '2026-02-05', NULL, 3300000.00, 'https://example.com/contracts/hd019.jpg', 1, 'HIEU_LUC'),
-(20, 20, 20, '2026-03-18', NULL, 2900000.00, 'https://example.com/contracts/hd020.jpg', 1, 'HIEU_LUC');
+INSERT INTO HOP_DONG (id, khach_thue_id, phong_id, ngay_bat_dau, ngay_don_vao, ngay_ket_thuc, tien_coc, anh_hop_dong_url, so_luong_nguoi_o, trang_thai) VALUES
+(1, 1, 1, '2026-01-01', '2026-01-01', NULL, 3000000.00, 'https://example.com/contracts/hd001.jpg', 2, 'HIEU_LUC'),
+(2, 2, 2, '2026-02-15', '2026-02-15', NULL, 3200000.00, 'https://example.com/contracts/hd002.jpg', 1, 'HIEU_LUC'),
+(3, 3, 3, '2025-06-01', '2025-06-01', '2026-01-31', 2800000.00, 'https://example.com/contracts/hd003.jpg', 1, 'KET_THUC'),
+(4, 4, 4, '2026-03-01', '2026-03-01', NULL, 3000000.00, 'https://example.com/contracts/hd004.jpg', 2, 'HIEU_LUC'),
+(5, 5, 5, '2026-03-10', '2026-03-10', NULL, 3300000.00, 'https://example.com/contracts/hd005.jpg', 1, 'HIEU_LUC'),
+(6, 6, 6, '2026-02-01', '2026-02-01', NULL, 2900000.00, 'https://example.com/contracts/hd006.jpg', 1, 'HIEU_LUC'),
+(7, 7, 7, '2026-01-20', '2026-01-20', NULL, 2500000.00, 'https://example.com/contracts/hd007.jpg', 2, 'HIEU_LUC'),
+(8, 8, 8, '2026-04-01', '2026-04-01', NULL, 3500000.00, 'https://example.com/contracts/hd008.jpg', 1, 'HIEU_LUC'),
+(9, 9, 9, '2026-02-25', '2026-02-25', NULL, 3400000.00, 'https://example.com/contracts/hd009.jpg', 1, 'HIEU_LUC'),
+(10, 10, 10, '2025-12-01', '2025-12-01', '2026-02-28', 3100000.00, 'https://example.com/contracts/hd010.jpg', 2, 'KET_THUC'),
+(11, 11, 11, '2026-01-05', '2026-01-05', NULL, 3600000.00, 'https://example.com/contracts/hd011.jpg', 1, 'HIEU_LUC'),
+(12, 12, 12, '2026-01-15', '2026-01-15', NULL, 3000000.00, 'https://example.com/contracts/hd012.jpg', 2, 'HIEU_LUC'),
+(13, 13, 13, '2026-02-10', '2026-02-10', NULL, 3400000.00, 'https://example.com/contracts/hd013.jpg', 1, 'HIEU_LUC'),
+(14, 14, 14, '2026-03-05', '2026-03-05', NULL, 2800000.00, 'https://example.com/contracts/hd014.jpg', 1, 'HIEU_LUC'),
+(15, 15, 15, '2025-10-01', '2025-10-01', '2026-03-31', 3700000.00, 'https://example.com/contracts/hd015.jpg', 2, 'KET_THUC'),
+(16, 16, 16, '2026-02-20', '2026-02-20', NULL, 3200000.00, 'https://example.com/contracts/hd016.jpg', 1, 'HIEU_LUC'),
+(17, 17, 17, '2026-03-12', '2026-03-12', NULL, 3100000.00, 'https://example.com/contracts/hd017.jpg', 1, 'HIEU_LUC'),
+(18, 18, 18, '2026-01-25', '2026-01-25', NULL, 3600000.00, 'https://example.com/contracts/hd018.jpg', 2, 'HIEU_LUC'),
+(19, 19, 19, '2026-02-05', '2026-02-05', NULL, 3300000.00, 'https://example.com/contracts/hd019.jpg', 1, 'HIEU_LUC'),
+(20, 20, 20, '2026-03-18', '2026-03-18', NULL, 2900000.00, 'https://example.com/contracts/hd020.jpg', 1, 'HIEU_LUC');
 
 INSERT INTO XE (id, hop_dong_id, loai_xe, bien_so) VALUES
 (1, 1, 'XE_MAY', '59A1-123.45'),

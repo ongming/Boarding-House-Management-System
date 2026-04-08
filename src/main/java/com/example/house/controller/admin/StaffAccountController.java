@@ -21,5 +21,17 @@ public class StaffAccountController {
                                                               String shiftSchedule) {
         return service.createStaffAccount(username, password, fullName, shiftSchedule);
     }
+
+    public AdminDataStore.StaffAccountItem updateStaffAccount(Integer employeeId,
+                                                              String username,
+                                                              String password,
+                                                              String fullName,
+                                                              String shiftSchedule) {
+        return service.updateStaffAccount(employeeId, username, password, fullName, shiftSchedule);
+    }
+
+    public void deleteStaffAccount(Integer employeeId) {
+        service.deleteStaffAccount(employeeId);
+    }
 }
 

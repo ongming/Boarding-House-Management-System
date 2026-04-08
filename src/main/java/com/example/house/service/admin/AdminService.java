@@ -21,6 +21,8 @@ public interface AdminService {
     AdminDataStore.RoomItem saveRoom(AdminDataStore.RoomItem item);
     void deleteRoom(Integer roomId);
     AdminDataStore.StaffAccountItem createStaffAccount(String username, String password, String fullName, String shiftSchedule);
+    AdminDataStore.StaffAccountItem updateStaffAccount(Integer employeeId, String username, String password, String fullName, String shiftSchedule);
+    void deleteStaffAccount(Integer employeeId);
     void refreshRevenue(com.example.house.model.enums.AdminRevenuePeriod period, int year, Integer periodValue);
     AdminDataStore.CheckoutSummary buildCheckoutSummary(Integer contractId);
     void addCompensation(Integer contractId, double amount, String reason);

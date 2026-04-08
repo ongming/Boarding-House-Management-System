@@ -110,6 +110,26 @@ public class JpaAdminDataStore implements AdminDataStore {
     }
 
     @Override
+    public StaffAccountItem updateStaffAccount(Integer employeeId, String username, String password, String fullName, String shiftSchedule) {
+        Account account = adminService.updateStaffAccount(employeeId, username, password, fullName, shiftSchedule);
+        Employee employee = account.getEmployee();
+        StaffAccountItem item = new StaffAccountItem(
+                employee == null ? employeeId : employee.getId(),
+                account.getUsername(),
+                account.getFullName(),
+                employee == null ? "" : safe(employee.getShiftSchedule())
+        );
+        upsertStaff(item);
+        return item;
+    }
+
+    @Override
+    public void deleteStaffAccount(Integer employeeId) {
+        adminService.deleteStaffAccount(employeeId);
+        staffAccounts.removeIf(item -> item.id() != null && item.id().equals(employeeId));
+    }
+
+    @Override
     public void refreshRevenue(AdminRevenuePeriod period, int year, Integer periodValue) {
         AdminRevenueReport report = adminService.getRevenueReport(period, year);
         List<AdminRevenueRow> rows = report.rows();
@@ -228,6 +248,16 @@ public class JpaAdminDataStore implements AdminDataStore {
             }
         }
         feedbacks.add(item);
+    }
+
+    private void upsertStaff(StaffAccountItem item) {
+        for (int i = 0; i < staffAccounts.size(); i++) {
+            if (Objects.equals(staffAccounts.get(i).id(), item.id())) {
+                staffAccounts.set(i, item);
+                return;
+            }
+        }
+        staffAccounts.add(item);
     }
 
     private StaffAccountItem toStaffItem(Employee employee) {

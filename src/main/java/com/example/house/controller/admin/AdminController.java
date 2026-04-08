@@ -43,6 +43,12 @@ public class AdminController {
     public AdminDataStore.StaffAccountItem createStaffAccount(String username, String password, String fullName, String shiftSchedule) {
         return staffAccountController.createStaffAccount(username, password, fullName, shiftSchedule);
     }
+    public AdminDataStore.StaffAccountItem updateStaffAccount(Integer employeeId, String username, String password, String fullName, String shiftSchedule) {
+        return staffAccountController.updateStaffAccount(employeeId, username, password, fullName, shiftSchedule);
+    }
+    public void deleteStaffAccount(Integer employeeId) {
+        staffAccountController.deleteStaffAccount(employeeId);
+    }
     public void refreshRevenue(AdminRevenuePeriod period, int year, Integer periodValue) {
         revenueStatsController.refreshRevenue(period, year, periodValue);
     }

@@ -193,6 +193,101 @@ public class AdminDomainServiceImpl implements AdminDomainService {
     }
 
     @Override
+    public Account updateStaffAccount(Integer employeeId, String username, String rawPassword, String fullName, String shiftSchedule) {
+        if (employeeId == null) {
+            throw new IllegalArgumentException("Chon nhan vien can cap nhat");
+        }
+        if (username == null || username.isBlank()) {
+            throw new IllegalArgumentException("Ten dang nhap khong duoc de trong");
+        }
+
+        EntityManager em = JpaUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+
+            Employee employee = em.find(Employee.class, employeeId);
+            if (employee == null || employee.getAccount() == null) {
+                throw new IllegalArgumentException("Khong tim thay nhan vien");
+            }
+
+            Account account = employee.getAccount();
+            String normalizedUsername = username.trim();
+            if (!normalizedUsername.equalsIgnoreCase(account.getUsername())) {
+                accountRepository.findByUsername(normalizedUsername).ifPresent(existing -> {
+                    throw new IllegalArgumentException("Ten dang nhap da ton tai");
+                });
+                account.setUsername(normalizedUsername);
+            }
+
+            account.setFullName(fullName);
+            employee.setShiftSchedule(shiftSchedule);
+            if (rawPassword != null && !rawPassword.isBlank()) {
+                account.setPassword(rawPassword);
+            }
+
+            em.merge(account);
+            em.merge(employee);
+            tx.commit();
+
+            account.setEmployee(employee);
+            return account;
+        } catch (RuntimeException ex) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw ex;
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public void deleteStaffAccount(Integer employeeId) {
+        if (employeeId == null) {
+            throw new IllegalArgumentException("Chon nhan vien can xoa");
+        }
+
+        EntityManager em = JpaUtil.getEntityManager();
+        EntityTransaction tx = em.getTransaction();
+        try {
+            tx.begin();
+
+            Employee employee = em.find(Employee.class, employeeId);
+            if (employee == null) {
+                throw new IllegalArgumentException("Khong tim thay nhan vien");
+            }
+
+            Long invoiceCount = em.createQuery(
+                            "SELECT COUNT(i) FROM Invoice i WHERE i.employee.id = :employeeId",
+                            Long.class)
+                    .setParameter("employeeId", employeeId)
+                    .getSingleResult();
+            if (invoiceCount != null && invoiceCount > 0) {
+                throw new IllegalArgumentException("Khong the xoa nhan vien da phat sinh hoa don");
+            }
+
+            Account account = employee.getAccount();
+            employee.setAccount(null);
+            em.remove(employee);
+            if (account != null) {
+                Account managedAccount = em.contains(account) ? account : em.merge(account);
+                managedAccount.setEmployee(null);
+                em.remove(managedAccount);
+            }
+
+            tx.commit();
+        } catch (RuntimeException ex) {
+            if (tx.isActive()) {
+                tx.rollback();
+            }
+            throw ex;
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
     public AdminRevenueReport getRevenueReport(AdminRevenuePeriod period, int year) {
         if (period == null) {
             throw new IllegalArgumentException("Chon ky thong ke");

@@ -49,6 +49,14 @@ public class AdminServiceImpl implements AdminService {
         return dataStore.createStaffAccount(username, password, fullName, shiftSchedule);
     }
     @Override
+    public AdminDataStore.StaffAccountItem updateStaffAccount(Integer employeeId, String username, String password, String fullName, String shiftSchedule) {
+        return dataStore.updateStaffAccount(employeeId, username, password, fullName, shiftSchedule);
+    }
+    @Override
+    public void deleteStaffAccount(Integer employeeId) {
+        dataStore.deleteStaffAccount(employeeId);
+    }
+    @Override
     public void refreshRevenue(AdminRevenuePeriod period, int year, Integer periodValue) {
         dataStore.refreshRevenue(period, year, periodValue);
     }
